@@ -41,7 +41,6 @@ echo "gcc inst.c"
 $GCC $CFLAGS -c src/inst.c -o os_install.o
 echo "gcc disk/partition.c"
 $GCC $CFLAGS -c src/disk/partition.c -o partio.o
-$GCC $CFLAGS -c src/disk/partition.c -S -masm=intel
 
 # space between gcc and nasm compilation
 echo
