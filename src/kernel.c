@@ -20,6 +20,7 @@
 #include <cpu/cpu.h>
 #include <disk/partition.h>
 #include <fs/lxfs.h>
+#include <sys/syscall.h>
 
 #define KERNEL_BOOT_START   0x00100000    // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -29,6 +30,8 @@ extern uint32_t _kernel_end;
 bool __global_exit;
 
 LXFS_DIR currentDir; // the LBA of a dir
+
+extern void init_system_calls(void);
 
 void __dump_multiboot_info(struct multiboot_info* bootInfo);
 void __transfer_iso_from_drive(uint16_t, uint16_t);
@@ -49,6 +52,8 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     ide_initialize(0,0,0,0,0);
     printf("[ ^2OK^7 ] IDE/ATAPI driver initialized\n"); 
     
+    init_system_calls();
+
     if (__cpu_check()){
         char _cpu_vend_raw[12];
         cpuid_string(0, (uint32_t*)_cpu_vend_raw);
@@ -206,6 +211,10 @@ void __execute_full(const char* command){
         return;
     } else if (strcmd(command, "led")){
         cmd_led(command, argc, tokens);
+        return;
+    } else if (strcmd(command, "run")){
+//        cmd_run(command, argc, tokens);
+        asm volatile ("int $0x80");
         return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));

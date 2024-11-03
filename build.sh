@@ -41,6 +41,8 @@ echo "gcc inst.c"
 $GCC $CFLAGS -c src/inst.c -o os_install.o
 echo "gcc disk/partition.c"
 $GCC $CFLAGS -c src/disk/partition.c -o partio.o
+echo "gcc syscall.c"
+$GCC $CFLAGS -c src/sys/syscall.c -o syscall.o
 
 # space between gcc and nasm compilation
 echo
@@ -59,7 +61,7 @@ nasm -f elf32 src/cpu/cpu.s -o cpu_asm.o
 
 # linking
 echo "\nLinking...\n"
-i686-elf-ld -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o
+i686-elf-ld -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o
 # clean (rm *.o)
 rm *.o
 # make ISO

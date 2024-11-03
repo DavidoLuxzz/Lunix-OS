@@ -382,3 +382,17 @@ __CMD_FUNC(cmd_led){
     return 0;
 }
 
+
+
+
+__CMD_FUNC(cmd_run) {
+    // running program files from disk
+    
+
+    return 0;
+}
+
+
+
+
+

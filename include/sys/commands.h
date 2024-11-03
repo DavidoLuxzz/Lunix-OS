@@ -16,6 +16,8 @@ __CMD_FUNC(cmd_rmdir);
 __CMD_FUNC(cmd_rm);
 __CMD_FUNC(cmd_finfo);
 __CMD_FUNC(cmd_led);
+__CMD_FUNC(cmd_run);
+
 
 
 

@@ -134,15 +134,18 @@ char* exception_messages[] = {
 };
 
 #include <sys/core_asm.h>
+#include <sys/syscall.h>
 void isr_handler(struct InterruptRegisters* regs){
     if (regs->int_no < 32){
         print(exception_messages[regs->int_no]);
         print("\n");
         print("Exception! System Halted\n");
-        uint32_t eip = regs->eip;
-        printf("EIP: %p\ni", eip);
-        printf("Instruction Code: 0x%x", *(uint32_t*)eip);
+        printf("EIP: %p\n", regs->eip);
+        printf("Instruction Code: 0x%x", *(uint32_t*)regs->eip);
         for (;;);
+    } else {
+        printf("ISR no.%u\n", regs->int_no);
+        __newproc();
     }
 }
 
