@@ -119,7 +119,7 @@ char* exception_messages[] = {
     "Alignment Fault",
     "Machine Check", 
     "Reserved",
-    "Reserved",
+    "Invalid System Call",
     "Reserved",
     "Reserved",
     "Reserved",
@@ -145,7 +145,9 @@ void isr_handler(struct InterruptRegisters* regs){
         for (;;);
     } else {
         printf("ISR no.%u\n", regs->int_no);
-        __newproc();
+        printf("EAX code = %p\n", regs->eax);
+        printf("EDI = %p\nESI = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edi, regs->esi, regs->ebp, regs->esp, regs->eip);
+        __exec_sys_call(regs);
     }
 }
 

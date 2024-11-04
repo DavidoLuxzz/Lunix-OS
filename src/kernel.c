@@ -214,7 +214,9 @@ void __execute_full(const char* command){
         return;
     } else if (strcmd(command, "run")){
 //        cmd_run(command, argc, tokens);
-        asm volatile ("int $0x80");
+        asm volatile ("mov $0x0, %eax\n"
+                      "mov $0x69, %edi\n"
+                      "int $0x80");
         return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));

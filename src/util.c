@@ -77,3 +77,4 @@ void outsw(uint16_t __port, const void *__buf, unsigned long __n) {
 			: "+S"(__buf), "+c"(__n)
 			: "d"(__port));
 }
+
