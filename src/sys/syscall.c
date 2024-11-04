@@ -17,11 +17,12 @@ void init_system_calls(){
 
 void __exec_sys_call(struct InterruptRegisters* regs){
     uint32_t eax = regs->eax;
-    if (eax>=__NUM_SYSCALLS) asm volatile ("int $20");
     void (*fn)();
     fn = __syscall_functions[eax];
-    if (!fn) asm volatile ("int $20");
-    printf("syscall valid! eax=%u\n", eax);
+    if (eax>=__NUM_SYSCALLS || !fn) {
+        printf("invalid system call!\n");
+        return;
+    }
     // execution
     uint8_t argc = __syscall_argc[eax];
     /*

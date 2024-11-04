@@ -1,6 +1,6 @@
 #include <gdt/gdt.h>
 #include <util.h>
-
+#include <stdio.h>
 
 extern void gdt_flush(uint32_t);
 extern void tss_flush();
@@ -15,8 +15,16 @@ void initGdt(uint32_t kernel_end){
 
     setGdtGate(0,0,0,0,0); //Null segment
     /* Lukin GDT code */
-    setGdtGate(1,0,0xFFF4FFFF, 0x9A, 0xCF); //Kernel code segment
-    setGdtGate(2,0,0xFFF4FFFF, 0x93, 0xCF); //Kernel data segment
+    /* Kernel Code segment:
+     *  base ili pocetak je u 0x0
+     *  a limit je postavljen u 0x2FF(FFF)
+     *  ne broji se limit u bajtovima vec u 1kb "stranicama",
+     *  tako da 0x2FF postaje 0x2FFFFF (dodaje se tri hex cifre)
+     */
+    uint32_t pages = (kernel_end>>12) & 0x000FFFFF;
+    printf("GDT: setting kernel code segment limit to %p (%p pages)\n", kernel_end, pages);
+    setGdtGate(1,0,pages, 0x9A, 0xCF); //Kernel code segment
+    setGdtGate(2,0,0xFFFFFFFF, 0x93, 0xCF); //Kernel data segment
     setGdtGate(3,kernel_end,0xFFFFFFFF, 0x9B, 0xCF); //User code segment
     setGdtGate(4,kernel_end,0xFFFFFFFF, 0x93, 0xCF); //User data segment
     

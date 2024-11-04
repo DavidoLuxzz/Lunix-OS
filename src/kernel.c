@@ -22,7 +22,7 @@
 #include <fs/lxfs.h>
 #include <sys/syscall.h>
 
-#define KERNEL_BOOT_START   0x00100000    // grub loaded kernel destination
+#define KERNEL_BOOT_START   0x00100000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
                                         // rest is for apps (from $KERNEL_MEMORY_START)
 extern uint32_t _kernel_end;
@@ -215,7 +215,7 @@ void __execute_full(const char* command){
     } else if (strcmd(command, "run")){
 //        cmd_run(command, argc, tokens);
         asm volatile ("mov $0x0, %eax\n"
-                      "mov $0x69, %edi\n"
+                      "mov $69, %edi\n"
                       "int $0x80");
         return;
     }
