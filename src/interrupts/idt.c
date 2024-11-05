@@ -144,9 +144,6 @@ void isr_handler(struct InterruptRegisters* regs){
         printf("Instruction Code: 0x%x", *(uint32_t*)regs->eip);
         for (;;);
     } else {
-        printf("ISR no.%u\n", regs->int_no);
-        printf("EAX code = %p\n", regs->eax);
-        printf("EDI = %p\nESI = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edi, regs->esi, regs->ebp, regs->esp, regs->eip);
         __exec_sys_call(regs);
     }
 }
@@ -171,6 +168,8 @@ void irq_handler(struct InterruptRegisters* regs){
 
     if (handler){
         handler(regs);
+    } else {
+        printf("unknown int\n");
     }
 
     if (regs->int_no >= 40){

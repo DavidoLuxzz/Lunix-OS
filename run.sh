@@ -1,4 +1,4 @@
-qemu-system-i386 -m 512M -drive file=../LunixOS_drive -kernel Lunix/boot/kernel -boot order=d
+qemu-system-i386 -m 512M -drive file=../LunixOS_drive -cdrom bins.iso -kernel Lunix/boot/kernel -boot order=d
 # ne znam zasta ce boot order=d ali kako god
 # RAM: 512MB
 # Za Storage ce koristiti fajl <drive> koji se nalazi pored Lunix.iso

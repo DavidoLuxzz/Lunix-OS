@@ -17,6 +17,8 @@ void init_system_calls(){
 
 void __exec_sys_call(struct InterruptRegisters* regs){
     uint32_t eax = regs->eax;
+    printf("EAX code = %p\n", eax);
+    printf("EDI = %p\nESI = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edi, regs->esi, regs->ebp, regs->esp, regs->eip);
     void (*fn)();
     fn = __syscall_functions[eax];
     if (eax>=__NUM_SYSCALLS || !fn) {
@@ -59,9 +61,21 @@ void __exec_sys_call(struct InterruptRegisters* regs){
     */
 }
 
+#include <sys/drivers/disk_h.h>
+#include <sys/kmalloc.h>
 SCDEF(bool, newproc, int a) {
     printf("creating new process %u\n", a);
-
+    bool err = false;
+    char *_where = (char*)0x500000;
+    _where[0] = 0xC6;
+    _where[1] = 0x05;
+    _where[2] = 0x00;
+    _where[3] = 0x80;
+    _where[4] = 0x0B;
+    _where[5] = 0x00;
+    _where[6] = 0x51;
+    _where[7] = 0xC3;
+    asm volatile ("call 0x500000"); 
     return 0;
 }
 
