@@ -159,7 +159,7 @@ void __execute_full(const char* command){
         printf("[ ^fINFO^_ ] Reading from Drive %u:\n", drv);
         uint16_t _r_buffer[1024];
         memset(_r_buffer, 0, 2048);
-        uint8_t err = ide_atapi_read(drv, 0, 1, 0, _r_buffer);
+        uint8_t err = ide_atapi_read(drv, 24, 1, 0, _r_buffer);
         for (int i=0; i<4; i++){
             printf("0x%x ", _r_buffer[i]);
         }
@@ -200,7 +200,10 @@ void __execute_full(const char* command){
         cmd_rmdir(command, argc, tokens);
         return;
     } else if (strcmd(command, "new")){
-        int err = lxfs_create_new_file(&currentDir, "lule.txt", 0777, 0, 512);
+        if (argc < 1) {
+            printf("new: no file name given\n"); return;
+        }
+        int err = lxfs_create_new_file(&currentDir, command+tokens[0], 0777, 0, 512);
         if (err) printf("error: %u\n", err);
         return;
     } else if (strcmd(command, "rm")){
@@ -213,10 +216,11 @@ void __execute_full(const char* command){
         cmd_led(command, argc, tokens);
         return;
     } else if (strcmd(command, "run")){
-//        cmd_run(command, argc, tokens);
-        asm volatile ("mov $0x0, %eax\n"
-                      "mov $69, %edi\n"
-                      "int $0x80");
+        if (argc < 1) return;
+        uint32_t rlba = stoi(command+tokens[0]);
+        uint32_t alba = lxfs_get_data_lba(rlba);
+        asm volatile ("mov %0, %%edi" : "+r"(alba));
+        _fire_syscall();
         return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));

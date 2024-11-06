@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <util.h>
 
-void ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, uint16_t *buffer){
+void ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
+    uint16_t *buffer = (uint16_t*)_buffer;
     for (uint32_t i=0; i < num_sectors; i++) {
         outb(0x1F6, (0xE0 | (drv << 4) | ((sector >> 24) & 0x0F))); // drive | 24-31 LBA bits
         outb(0x1F2, 1); // sector count port - # of sectors to read/write
@@ -33,8 +34,9 @@ void ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, uint16_t 
     }
 }
 
-uint8_t ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, uint16_t *buffer){
+uint8_t ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
     uint8_t err;
+    uint16_t *buffer = (uint16_t*)_buffer;
     for (uint32_t i=0; i < num_sectors; i++) {
         outb(0x1F6, (0xE0 | (drv << 4) | ((sector >> 24) & 0x0F))); // head/drive # port - send head/drive #
         outb(0x1F2, 1); // sector count port - # of sectors to read/write

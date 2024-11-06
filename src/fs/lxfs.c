@@ -374,7 +374,9 @@ int lxfs_create_new_file(LXFS_DIR *currentDir, const char* name, uint16_t perms,
     return LXFS_SUCCESS;
 }
 
-
+uint32_t lxfs_get_data_lba(uint32_t rel_lba){
+    return _dskpart.part.lba + __lxfs_data_start_lba + rel_lba;
+}
 
 
 

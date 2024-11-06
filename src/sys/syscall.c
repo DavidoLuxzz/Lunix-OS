@@ -62,20 +62,14 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 }
 
 #include <sys/drivers/disk_h.h>
+#include <sys/drivers/disk_ata.h>
 #include <sys/kmalloc.h>
-SCDEF(bool, newproc, int a) {
-    printf("creating new process %u\n", a);
-    bool err = false;
-    char *_where = (char*)0x500000;
-    _where[0] = 0xC6;
-    _where[1] = 0x05;
-    _where[2] = 0x00;
-    _where[3] = 0x80;
-    _where[4] = 0x0B;
-    _where[5] = 0x00;
-    _where[6] = 0x51;
-    _where[7] = 0xC3;
-    asm volatile ("call 0x500000"); 
+SCDEF(bool, newproc, uint32_t lba) {
+    printf("creating new process lba=%u\n", lba);
+    void (*_where)() = kmalloc(512);
+    ata_disk_read(0, lba, 1, _where);
+    _where();
+    kfree(_where);
     return 0;
 }
 

@@ -184,6 +184,9 @@ int _lxfs_remove_file(LXFS_DIR *cd, int index);
  */
 int lxfs_remove_file(LXFS_DIR *current, const char* filename);
 
-
+/**
+ * Gets absolute Logical Block Address of a data file on disk
+ */
+uint32_t lxfs_get_data_lba(uint32_t relative_lba);
 
 

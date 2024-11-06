@@ -24,7 +24,7 @@ void __exec_sys_call(struct InterruptRegisters*);
 #define SCDEF(type, name, ...) type __##name (__VA_ARGS__)
 
 /* Creates new process */
-SCDEC(1,  bool,     newproc,  int)
+SCDEC(1,  bool,     newproc,  uint32_t)
 
 
 
