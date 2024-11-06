@@ -61,8 +61,9 @@ nasm -f elf32 src/cpu/cpu.s -o cpu_asm.o
 
 echo "nasm bin programs"
 nasm -f bin src/bin/test.s -o bin/test
-#i686-elf-ld -m elf_i386 -e _start -o bin/test bin_test.o 
-mkisofs -o bins.iso -V "Lunix BIN for M2" bin
+# CD-ROM .ISO system bin/ programs testing:
+# i686-elf-ld -m elf_i386 -e _start -o bin/test bin_test.o 
+# mkisofs -o bins.iso -V "Lunix BIN for M2" bin
 
 # linking
 echo "\nLinking...\n"
