@@ -33,6 +33,8 @@ bool cursor_enabled();
 void goto_line(uint32_t);
 void goto_column(uint32_t);
 void move_cursor(uint32_t x, uint32_t y); // text cursor not the visible blinking cursor
+void set_vga_position(uint32_t pos);
+uint32_t get_vga_position(void);
 
 void set_text_color(uint16_t);
 void set_background_color(uint16_t);

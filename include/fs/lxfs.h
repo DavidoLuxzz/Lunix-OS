@@ -189,4 +189,18 @@ int lxfs_remove_file(LXFS_DIR *current, const char* filename);
  */
 uint32_t lxfs_get_data_lba(uint32_t relative_lba);
 
+/**
+ * "Open" file by allocating space for file entry where the opened file will be located.
+ * TODO: make <stdio.h> FILE struct and load file into that instead of LxFS entry.
+ */
+LXFS_ENTRY* lxfs_open_file(LXFS_DIR* cd, const char* fname);
+
+/**
+ * "Close" file by freeing space allocated for file entry of opened file.
+ */
+void lxfs_close_file(LXFS_ENTRY* allocated_file_entry);
+
+
+
+
 

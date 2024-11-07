@@ -380,4 +380,37 @@ uint32_t lxfs_get_data_lba(uint32_t rel_lba){
 
 
 
+LXFS_ENTRY* lxfs_open_file(LXFS_DIR* cd, const char* fname){
+    LXFS_ENTRY* reten = kmalloc(sizeof(LXFS_ENTRY));
+    uint32_t valids=0;
+    LXFS_ENTRY es[LXFS_MAX_NODES+2];
+    // first two entries are skipped (LXFS_DIR)
+    lxfs_get_all_entries(cd->entry.lba, es);
+    uint32_t dirsize = es[0].size; // + 2 for . and ..
+    if (!dirsize) goto __lxfs_open_file___error_label;
+    for (uint32_t i=2; i<LXFS_MAX_NODES; i++){
+        LXFS_ENTRY e = es[i];
+        if (!(e.flags & LXFS_VALID)) continue;
+       
+        if (strcmd(e.name, fname)){
+            memcpy(reten, &e, sizeof(LXFS_ENTRY));
+            return reten;
+        }
+
+        if (++valids >= dirsize) break;
+    }
+__lxfs_open_file___error_label:
+    kfree(reten);
+    return NULL;
+}
+
+void lxfs_close_file(LXFS_ENTRY* allocated_file_entry){
+    kfree(allocated_file_entry);
+}
+
+
+
+
+
+
 

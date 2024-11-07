@@ -112,6 +112,9 @@ void putchar(char c){
                 tabLen--;
             }
             break;
+        case '\0':
+            // do nothing
+            break;
         default:
             _putchar(c);
             break;
@@ -132,6 +135,14 @@ void move_cursor(uint32_t x, uint32_t y){
     column = x;
     line = y;
 }
+void set_vga_position(uint32_t pos){
+    column = pos%width;
+    line = (pos-column)/width;
+}
+uint32_t get_vga_position(void){
+    return line*width + column;
+}
+
 
 void set_text_color(uint16_t _col){
     // (COLOR8_LIGHT_GREY << 8) | (COLOR8_BLACK << 12);

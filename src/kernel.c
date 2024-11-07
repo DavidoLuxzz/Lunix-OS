@@ -216,33 +216,10 @@ void __execute_full(const char* command){
         cmd_led(command, argc, tokens);
         return;
     } else if (strcmd(command, "run")){
-        if (argc < 1) return;
-        uint32_t rlba = stoi(command+tokens[0]);
-        uint32_t alba = lxfs_get_data_lba(rlba);
-        asm volatile ("mov %0, %%edi" : "+r"(alba));
-        _fire_syscall();
+        cmd_run(command, argc, tokens);
         return;
     } else if (strcmd(command, "shut")){
-        if (argc < 1) {
-            printf("Choose shutdown method:\n1: todo\n2: QEMU\n$ ");
-            char ans[10];
-            nread(ans,1);
-            switch(ans[0]&0xFF - '0'){
-                case 1: goto __todo_shutdown_label;
-                case 2: goto __qemu_shutdown_label;
-                default: goto __invalid_shutdown_label;
-            }
-        } else if (strcmd(command+tokens[0], "--todo")){
-__todo_shutdown_label:
-            __global_exit = true;
-        } else if (strcmd(command+tokens[0], "--qemu")){
-__qemu_shutdown_label:
-            printf("Sending shutdown signal... (QEMU)\n");
-            outw(0x604, 0x2000);
-        } else {
-__invalid_shutdown_label:
-            printf("Unknown shutdown option: %s\n",command+tokens[0]);
-        }
+        cmd_shut(command, argc, tokens);
         return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));

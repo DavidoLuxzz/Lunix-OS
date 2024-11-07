@@ -378,7 +378,50 @@ __CMD_FUNC(cmd_led){
     if (argc < 1){
         printf("led: no arguments\n"); return 0;
     }
-    printf("Lunix editor (v0.0.0 production not started yet)\n");
+    LXFS_ENTRY* e = lxfs_open_file(&currentDir, command+tokens[0]);
+    if (!e) {
+        printf("Failed to open file: %s\n", command+tokens[0]); return 0;
+    }
+    uint32_t alba = lxfs_get_data_lba(e->lba);
+    printf("Opening file at absolute LBA=%u\n",alba);
+    // load file to memory
+    char bytes[e->size*512];
+    ata_disk_read(0, alba, e->size, bytes);
+    // start editor
+    printf("Lunix editor (v0.0.1)\n");
+    uint32_t view_range, current_byte=0;
+    bool running=true;
+    printf("Enter viewing range: ");
+    char tmp[TERMINAL_MAX_BUFFER_LENGTH+1]; // +1 za svaki slucaj
+    nread(tmp, 10);
+    view_range = stoi(tmp);
+    // save current VGA screen to buffer
+    uint16_t* __tmp_screen = kmalloc(width*height*2);
+    memcpy(__tmp_screen, (void*)0xb8000, width*height*2);
+    uint32_t __tmp_vga_pos = get_vga_position();
+    // start editing process
+    clear_screen();
+    while (running){
+        printf("$ ");
+        read(tmp);
+        if (strcmd(tmp, "q")) running = false;
+        else if (strcmd(tmp, "r")){
+            // preview file from current_byte to +view_range
+            for (uint32_t i=0; i<view_range; i++){
+                printf("%x ", bytes[i+current_byte]&0xFF);
+            }
+            newLine();
+        } else if (strcmd(tmp, "help")){
+            printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes");
+        }
+    }
+    // load back saved screen
+    memcpy((void*)0xb8000,__tmp_screen,width*height*2);
+    kfree(__tmp_screen);
+    set_vga_position(__tmp_vga_pos);
+    putchar(0);
+    // finally, close the file ...
+    lxfs_close_file(e);
     return 0;
 }
 
@@ -387,12 +430,39 @@ __CMD_FUNC(cmd_led){
 
 __CMD_FUNC(cmd_run) {
     // running program files from disk
-    
-
+    uint32_t rlba = 0;
+    if (argc < 1) {
+        printf("Assuming LBA=%u\n", rlba);
+    } else rlba = stoi(command+tokens[0]);
+    uint32_t alba = lxfs_get_data_lba(rlba);
+    asm volatile ("mov %0, %%edi" : "+r"(alba));
+    _fire_syscall();
     return 0;
 }
 
 
 
-
+__CMD_FUNC(cmd_shut) {
+    if (argc < 1) {
+        printf("Choose shutdown method:\n1: todo\n2: QEMU\n$ ");
+        char ans[10];
+        nread(ans,1);
+        switch(ans[0]&0xFF - '0'){
+            case 1: goto __todo_shutdown_label;
+            case 2: goto __qemu_shutdown_label;
+            default: goto __invalid_shutdown_label;
+        }
+    } else if (strcmd(command+tokens[0], "--todo")){
+__todo_shutdown_label:
+        printf("Do you know what TO DO means?? Try 'exit' command instead\n");
+    } else if (strcmd(command+tokens[0], "--qemu")){
+__qemu_shutdown_label:
+        printf("Sending shutdown signal... (QEMU)\n");
+        outw(0x604, 0x2000);
+    } else {
+__invalid_shutdown_label:
+        printf("Unknown shutdown option: %s\n",command+tokens[0]);
+    }
+    return 0;
+}
 
