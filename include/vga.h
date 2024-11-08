@@ -40,7 +40,7 @@ void set_text_color(uint16_t);
 void set_background_color(uint16_t);
 void set_color(uint16_t);
 void _putchar(char c); // raw char ('\n' isn't a new line)
-void putchar(char c);
+int putchar(char c);
 void deleteLast();
 void print(const char* s);
 void scrollUp();

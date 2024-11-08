@@ -40,6 +40,12 @@ void __term_stdin_append(char c){
                 update_cursor();
             }
             break;
+        case '\t':
+            int ncc = putchar('\t');
+            for (int i=0; i<ncc; i++){
+                _stdin[_term_stdin_current_len++] = ' ';
+            }
+            break;
         default:
             _stdin[_term_stdin_current_len++] = c;
             putchar(c);

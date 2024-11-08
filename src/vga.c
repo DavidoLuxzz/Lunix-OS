@@ -91,7 +91,8 @@ void print(const char* s){
     }
 }
 
-void putchar(char c){
+int putchar(char c){
+    int new_char_count = 0;
     switch(c){
         case '\n':
             newLine();
@@ -101,12 +102,14 @@ void putchar(char c){
             break;
         case '\b':
             deleteLast();
+            new_char_count--;
             break;
         case '\t':
             if (column == width){
                 newLine();
             }
             uint16_t tabLen = 4 - (column % 4);
+            new_char_count += tabLen;
             while (tabLen != 0){
                 vga[line * width + (column++)] = ' ' | currentColor;
                 tabLen--;
@@ -117,9 +120,11 @@ void putchar(char c){
             break;
         default:
             _putchar(c);
+            new_char_count++;
             break;
     }
     set_cursor_pos(column, line);
+    return new_char_count;
 }
 
 void _putchar(char c){

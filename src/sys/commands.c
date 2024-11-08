@@ -432,6 +432,7 @@ __CMD_FUNC(cmd_led){
             current_byte = stoi(tmp);
         } else if (strcmd(tmp, "w")){
             ata_disk_write(0, alba, e->size, bytes);
+            printf("Saved file at LBA=%u (\"%s\")\n",alba,command+tokens[0]);
         } else if (strcmd(tmp, "help")){
             printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes\n  e: edit selected section\n  mv: move to byte\n");
         } 
