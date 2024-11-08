@@ -69,7 +69,8 @@ ISR_NOERRCODE 28
 ISR_NOERRCODE 29
 ISR_NOERRCODE 30
 ISR_NOERRCODE 31
-ISR_NOERRCODE 128
+ISR_NOERRCODE 128  ; int 0x80
+    extern isr_handler
 ISR_NOERRCODE 177
 
 IRQ 0, 32
@@ -89,9 +90,8 @@ IRQ  13,    45
 IRQ  14,    46    ; Primary ATA Hard Disk
 IRQ  15,    47    ; Secondary - || -
 
-extern isr_handler
 isr_common_stub:
-    pusha
+    pushad
     mov eax,ds
     PUSH eax
     MOV eax, cr2
@@ -113,7 +113,7 @@ isr_common_stub:
     MOV fs, bx
     MOV gs, bx
 
-    POPA
+    POPAD
     ADD esp, 8
     STI
     IRET

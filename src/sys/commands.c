@@ -449,16 +449,16 @@ __CMD_FUNC(cmd_led){
 
 
 
-
+#include <sys/syscall.h>
 __CMD_FUNC(cmd_run) {
     // running program files from disk
+    memcpy((void*)0x1c, "still no gud\n", 13);
     uint32_t rlba = 0;
     if (argc < 1) {
         printf("Assuming LBA=%u\n", rlba);
     } else rlba = stoi(command+tokens[0]);
     uint32_t alba = lxfs_get_data_lba(rlba);
-    asm volatile ("mov %0, %%edi" : "+r"(alba));
-    _fire_syscall();
+    __newproc(alba);
     return 0;
 }
 

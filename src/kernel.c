@@ -86,7 +86,9 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     uint32_t test_iptr = 0x0;
     test_iptr = _getip();
     printf("EIP: %p\n", test_iptr);
-   
+
+    printf("printf at: %p\n", printf);
+
     k_setKeyboardMode(K_MODE_TERMINAL);
     print("Keyboard mode set to: K_MODE_TERMINAL\n");
   

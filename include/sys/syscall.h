@@ -15,6 +15,12 @@
 #include <stdint.h>
 #include <util.h>
 
+struct sys_regs {
+    uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
+    uint32_t __unused_eip, __unused__, interrupt_num;
+}__attribute__((packed));
+typedef struct sys_regs sys_regs;
+
 #define __NUM_SYSCALLS  32
 void init_system_calls(void);
 void __exec_sys_call(struct InterruptRegisters*);
@@ -24,8 +30,10 @@ void __exec_sys_call(struct InterruptRegisters*);
 #define SCDEF(type, name, ...) type __##name (__VA_ARGS__)
 
 /* Creates new process */
-SCDEC(1,  bool,     newproc,  uint32_t)
-
+//   argc  fn_type  fn_name     parameters
+SCDEC(0,    void,   nosys,      void)
+SCDEC(1,    bool,   newproc,    uint32_t)
+SCDEC(2,    void,   write,      const char*, size_t)
 
 
 
