@@ -64,6 +64,7 @@ size_t strtok(const char* s, char d, uint16_t *tokens){
     }
     return ntokens;
 }
+#include <stdio.h>
 uint32_t stoi(const char* s){
     int i, _10=1;
     uint32_t res=0;
@@ -73,7 +74,19 @@ uint32_t stoi(const char* s){
     }
     return res;
 }
-#include <stdio.h>
+uint32_t stox(const char* s){
+    int i;
+    uint32_t res=0, bs=0;
+    for (i=strdlen(s, ' ')-1; i>=0; i--){
+        char c = s[i];
+        if (c>='a') res += ((c-'a'+0xa)<<bs);
+        else if (c>='A') res += ((c-'A'+0xA)<<bs);
+        else if (c>='0') res += ((c-'0'+0x0)<<bs);
+        bs+=4;
+    }
+    return res;
+}
+
 uint32_t strsect(const char* s, uint32_t sect_size){
     int i, _10=1;
     uint32_t res=0;

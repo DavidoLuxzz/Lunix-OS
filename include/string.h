@@ -12,6 +12,7 @@ bool strdequ(const char*, const char*, char);
 bool strcmd(const char*, const char*);
 
 uint32_t stoi(const char*);
+uint32_t stox(const char*);
 uint32_t strsect(const char* s, uint32_t sect_size);
 
 size_t strtok(const char*, char, uint16_t*);

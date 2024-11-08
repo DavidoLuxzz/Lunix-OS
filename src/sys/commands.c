@@ -393,6 +393,7 @@ __CMD_FUNC(cmd_led){
     bool running=true;
     printf("Enter viewing range: ");
     char tmp[TERMINAL_MAX_BUFFER_LENGTH+1]; // +1 za svaki slucaj
+    tmp[TERMINAL_MAX_BUFFER_LENGTH]=0;
     nread(tmp, 10);
     view_range = stoi(tmp);
     // save current VGA screen to buffer
@@ -402,8 +403,10 @@ __CMD_FUNC(cmd_led){
     // start editing process
     clear_screen();
     while (running){
+        move_cursor(0,height-2);
         printf("$ ");
         read(tmp);
+        clear_screen();
         if (strcmd(tmp, "q")) running = false;
         else if (strcmd(tmp, "r")){
             // preview file from current_byte to +view_range
@@ -411,9 +414,27 @@ __CMD_FUNC(cmd_led){
                 printf("%x ", bytes[i+current_byte]&0xFF);
             }
             newLine();
+        } else if (strcmd(tmp, "e")){
+            printf("Edit this byte section (use space as delimiter): ");
+            read(tmp);
+            // tokenize input ' '
+            uint16_t tokens[strlen(tmp)/2];
+            tokens[0]=0; // da bi kreno od pocetka
+            size_t argc = strtok(tmp, ' ', (uint16_t*)tokens+1);
+            for (uint32_t i=0; i<argc+1; i++){
+                uint8_t x = stox(tmp+tokens[i])&0xFF;
+                printf("writing %x to %u\n", x, current_byte+i);
+                bytes[current_byte+i] = x;
+            }
+        } else if (strcmd(tmp, "mv")){
+            printf("Move to (byte): ");
+            read(tmp);
+            current_byte = stoi(tmp);
+        } else if (strcmd(tmp, "w")){
+            ata_disk_write(0, alba, e->size, bytes);
         } else if (strcmd(tmp, "help")){
-            printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes");
-        }
+            printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes\n  e: edit selected section\n  mv: move to byte\n");
+        } 
     }
     // load back saved screen
     memcpy((void*)0xb8000,__tmp_screen,width*height*2);
