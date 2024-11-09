@@ -5,7 +5,6 @@ _start:
     ; write syscall
     mov     eax,    0x2
     mov     ebx,    msg
-    add     ebx,    edx
     mov     ecx,    13
     int 0x80
     ret

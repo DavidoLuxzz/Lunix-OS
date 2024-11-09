@@ -23,8 +23,10 @@ void init_system_calls(){
 
 void __exec_sys_call(struct InterruptRegisters* regs){
     uint32_t eax = regs->eax;
+/*
     printf("EAX code = %p\n", eax);
     printf("EDX = %p\nEBX = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edx, regs->ebx, regs->ebp, regs->esp, regs->eip);
+*/
     void (*fn)();
     fn = __syscall_functions[eax];
     if (eax>=__NUM_SYSCALLS || !fn) {
@@ -70,14 +72,11 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <sys/drivers/disk_h.h>
 #include <sys/drivers/disk_ata.h>
 #include <sys/kmalloc.h>
+extern void* __debug_void;
 SCDEF(bool, newproc, uint32_t lba) {
     printf("creating new process lba=%u\n", lba);
     void (*_where)() = kmalloc(1024);
     ata_disk_read(0, lba, 2, _where);
-    asm volatile ("mov %0, %%edx" : "+r"(_where));
-    uint32_t _ebx;
-    asm volatile ("mov %%edx, %0" : "=r"(_ebx));
-    printf("running from %p edx=%p\n", _where, _ebx);
     _where();
     kfree(_where);
     return 0;

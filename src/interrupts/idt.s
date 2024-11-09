@@ -90,8 +90,10 @@ IRQ  13,    45
 IRQ  14,    46    ; Primary ATA Hard Disk
 IRQ  15,    47    ; Secondary - || -
 
+extern printptr
 isr_common_stub:
     pushad
+    ; debug
     mov eax,ds
     PUSH eax
     MOV eax, cr2
@@ -120,7 +122,7 @@ isr_common_stub:
 
 extern irq_handler
 irq_common_stub:
-    pusha
+    pushad
     mov eax,ds
     PUSH eax
     MOV eax, cr2
@@ -142,7 +144,7 @@ irq_common_stub:
     MOV fs, bx
     MOV gs, bx
 
-    POPA
+    POPAD
     ADD esp, 8
     STI
     IRET
