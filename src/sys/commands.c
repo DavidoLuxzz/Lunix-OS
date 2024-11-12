@@ -403,8 +403,8 @@ __CMD_FUNC(cmd_led){
     // start editing process
     clear_screen();
     while (running){
-        move_cursor(0,height-2);
-        printf("$ ");
+        move_cursor(0,height-3);
+        printf("loc: %u\n$ ", current_byte);
         read(tmp);
         clear_screen();
         if (strcmd(tmp, "q")) running = false;
@@ -414,6 +414,12 @@ __CMD_FUNC(cmd_led){
                 printf("%x ", bytes[i+current_byte]&0xFF);
             }
             newLine();
+        } else if (strcmd(tmp, "rs")){ 
+            for (uint32_t i=0; i<view_range; i++){
+                char c = bytes[i];
+                if (c>0x1F && c<0x7F) putc(c);
+                else putc('.');
+            }
         } else if (strcmd(tmp, "e")){
             printf("Edit this byte section (use space as delimiter): ");
             read(tmp);
@@ -434,7 +440,7 @@ __CMD_FUNC(cmd_led){
             ata_disk_write(0, alba, e->size, bytes);
             printf("Saved file at LBA=%u (\"%s\")\n",alba,command+tokens[0]);
         } else if (strcmd(tmp, "help")){
-            printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes\n  e: edit selected section\n  mv: move to byte\n");
+            printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes\n  e: edit selected section\n  mv: move to byte\n  rs: text preview from current byte\n");
         } 
     }
     // load back saved screen

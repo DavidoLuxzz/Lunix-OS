@@ -4,7 +4,6 @@
 ; jedno resenje za REL-ADDR jeste da kernel namesti CS,DS,ESP i EBP registere pre lansiranja procesa
 ; -> drugo resenje je da kernel preda procesu absolutnu adresu procesa i program ga sacuva u memoriji
 ;   pa kad program zeli da koristi svoju memoriju moze koristiti sacuvanu adresu kao bazu a relativnu datu adresu kao offset
-    bits 32    ; start with this or NASM will compile it as 16-bit code
     section .text
     global _start
 _start:
@@ -17,3 +16,7 @@ _start:
 
     section .data
 msg:    db  "hello niggas", 10, 0
+
+    section .nigger
+; niggers
+_a:     db  "niggers are here", 10, 0

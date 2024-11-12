@@ -1,4 +1,4 @@
-/** LunixOS system calls for 32-bit x86 architecture
+/** -- LunixOS system calls for 32-bit x86 architecture --
  * -> Sun Nov 3 21:55
  *  
  * Arguments are passed by registers in order:
