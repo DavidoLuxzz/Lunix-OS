@@ -29,9 +29,10 @@ void _lxfs_scan_dir(uint32_t lba){
         for (int i=2; i<LXFS_MAX_NODES; i++){
             LXFS_ENTRY e = entries[i];
             if (e.flags & LXFS_VALID){ // valid dir
-                if ((e.type_and_perms>>12) == LXFS_FOLDER){
+                uint8_t type = (e.type_and_perms>>12) & 0xFF; 
+                printf("LXFS: found node '%s' (%s)\n", e.name, _lxfs_get_type_name(type));
+                if (type == LXFS_FOLDER){
                     if (e.lba<4) continue;
-                    printf("DIR %s: ", e.name);
                     uint32_t bitmap_lba = e.lba/4;
                     uint32_t byte_off = bitmap_lba/8;
                     uint8_t inbyte_off = bitmap_lba - byte_off;
@@ -39,9 +40,8 @@ void _lxfs_scan_dir(uint32_t lba){
                     // recurse next dir
                     _lxfs_scan_dir(e.lba);
                     if (++found >= dsize) return;
-                } else if ((e.type_and_perms>>12) == LXFS_FILE){
+                } else if (type == LXFS_FILE){
                     if (e.lba<__lxfs_data_start_lba) continue;
-                    printf("FILE %s: ", e.name);
                     uint32_t bitmap_lba = (e.lba-__lxfs_data_start_lba)/LXFS_BLOCK_SIZE;
                     uint32_t byte_off = bitmap_lba/8;
                     uint8_t inbyte_off = bitmap_lba - byte_off;
