@@ -66,6 +66,7 @@ echo "\nLinking...\n"
 i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o elf.o 
 # clean (rm *.o)
 rm *.o
+
 # make ISO
 echo "Moving kernel file into Lunix/boot/kernel"
 mv kernel Lunix/boot/kernel
