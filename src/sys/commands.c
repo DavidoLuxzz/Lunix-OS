@@ -172,7 +172,7 @@ cmd_part_disk_size_loop:
     } else if (strcmd(command+tokens[0], "invl")){
         if (argc < 2) printf("No Partition index given\n");
         else {
-            uint16_t id = stoi(command+tokens[1]);
+            uint16_t id = stoi(command+tokens[1])&0xFFFF;
             if (!id){
                 printf("Access denied (BOOT PARTITION)\n");
                 return 6;
@@ -181,6 +181,16 @@ cmd_part_disk_size_loop:
             _get_partition(0,id,&part);
             memcpy((char*)&part.magic, "INVL", 4);
             _set_partition(0,id,&part);
+        }
+    } else if (strcmd(command+tokens[0], "use")){
+        if (argc < 2) printf("No Partition index given\n");
+        else {
+            uint16_t id = stoi(command+tokens[1])&0xFFFF;
+            if (!id){
+                printf("Using boot partition as workspace is forbidden!\n");
+                return 6;
+            }
+            _get_partition(0,id,&currentDir.part);
         }
     }
     return 0;
