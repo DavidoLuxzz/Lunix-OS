@@ -190,7 +190,10 @@ cmd_part_disk_size_loop:
                 printf("Using boot partition as workspace is forbidden!\n");
                 return 6;
             }
-            _get_partition(0,id,&currentDir.part);
+            DISK_PARTITION dpart;
+            dpart.drive = 0;
+            _get_partition(0,id,&dpart.part);
+            lxfs_use_partition(&dpart);
         }
     }
     return 0;

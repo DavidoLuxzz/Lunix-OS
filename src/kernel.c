@@ -232,6 +232,20 @@ void __execute_full(const char* command){
             printf("Type: %x, Offset: %p\n", pe.p_type, pe.p_offset);
         }
         return;
+    } else if (strcmd(command, "cpbin")){
+        char tmp[12];
+        printf("Destination drive will be assumed to be 0\nEnter source drive: ");
+        nread(tmp, 10);
+        uint8_t sdrv = stoi(tmp)&0xFF;
+        char* buf = (char*)kmalloc(2048);
+        ata_disk_read(sdrv, 0x0,1, buf);
+        
+        write(buf, 4);
+
+        ata_disk_write(0, 9696,4, buf);
+
+        kfree(buf);
+        return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));
     newLine();
