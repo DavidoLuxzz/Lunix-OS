@@ -21,6 +21,7 @@
 #include <disk/partition.h>
 #include <fs/lxfs.h>
 #include <sys/syscall.h>
+#include <sys/elf.h>
 
 #define KERNEL_BOOT_START   0x00100000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -222,6 +223,14 @@ void __execute_full(const char* command){
         return;
     } else if (strcmd(command, "shut")){
         cmd_shut(command, argc, tokens);
+        return;
+    } else if (strcmd(command, "elf")){
+        if (argc < 1) logerr("no input file");
+        else {
+            elf_ph_entry pe;
+            elf_get_program_header(&currentDir, command+tokens[0], &pe);
+            printf("Type: %x, Offset: %p\n", pe.p_type, pe.p_offset);
+        }
         return;
     }
     print("unknown command: "); write(command, strdlen(command, ' '));

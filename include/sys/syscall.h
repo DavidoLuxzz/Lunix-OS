@@ -32,7 +32,7 @@ void __exec_sys_call(struct InterruptRegisters*);
 /* Creates new process */
 //   argc  fn_type  fn_name     parameters
 SCDEC(0,    void,   nosys,      void)
-SCDEC(1,    bool,   newproc,    uint32_t)
+SCDEC(1,    bool,   newproc,    const char*)
 SCDEC(2,    void,   write,      const char*, size_t)
 
 

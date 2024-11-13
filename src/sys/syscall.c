@@ -72,11 +72,22 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <sys/drivers/disk_h.h>
 #include <sys/drivers/disk_ata.h>
 #include <sys/kmalloc.h>
-extern void* __debug_void;
-SCDEF(bool, newproc, uint32_t lba) {
+#include <fs/lxfs.h>
+extern LXFS_DIR currentDir;
+SCDEF(bool, newproc, const char* fname) {
+    LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
+    
+    uint32_t lba = lxfs_get_data_lba(e->lba);
+    uint32_t size = e->size;
+
+    lxfs_close_file(e);
+    if (!size) {
+        printf("error: size=0\n");
+        return 6;
+    }
     printf("creating new process lba=%u\n", lba);
-    void (*_where)() = kmalloc(1024);
-    ata_disk_read(0, lba, 2, _where);
+    void (*_where)() = kmalloc(size * 512);
+    ata_disk_read(0, lba, size, _where);
     _where();
     kfree(_where);
     return 0;
