@@ -1,8 +1,11 @@
 #pragma once
 #include <stdint.h>
+#include <fs/lxfs.h>
 
 #define __CMD_FUNC(func) int func(const char* command, size_t argc, uint16_t* tokens) // func(command, argc, tokens)
 #define __CMD_NOAR_FUNC(func) int func() // no arguments
+
+extern LXFS_DIR currentDir;
 
 // commands
 __CMD_NOAR_FUNC(cmd_clear);

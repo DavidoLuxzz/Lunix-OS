@@ -91,7 +91,7 @@ void keyboardHandler(struct InterruptRegisters *regs){
     if (keyboard_mode == K_MODE_TYPE){ // free type
         _keyboard_putc(scanCode, press, 0);
     } else if (keyboard_mode == K_MODE_TERMINAL){ // type to stdin, also to screen
-        if (!__term_check_keycode(keycode))
+        if (!__term_check_keycode(keycode, press))
             _keyboard_putc(scanCode, press, 1);
     }
     __KEYS[scanCode] = press==0;

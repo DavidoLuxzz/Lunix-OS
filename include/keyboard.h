@@ -13,6 +13,7 @@
 #define K_LEFT 0x4B
 #define K_RIGHT 0x4D
 #define K_DOWN 0x50
+#define K_CTRL 0x1D
 
 
 void initKeyboard();

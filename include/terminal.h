@@ -16,6 +16,6 @@ void __term_save_str_cmd();
 
 char* __term_get_previous_cmd();
 
-bool __term_check_keycode(uint32_t);
+bool __term_check_keycode(uint32_t, char);
 
 

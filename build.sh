@@ -47,6 +47,10 @@ echo "gcc sys/elf.c"
 $GCC $CFLAGS src/sys/elf.c -o elf.o
 echo "gcc sys/_process.c"
 $GCC $CFLAGS src/sys/_process.c -o _proc.o
+# compile system commands
+echo "compiling system commands"
+$GCC $CFLAGS src/sys/commands/*.c 
+
 
 # space between gcc and nasm compilation
 echo
@@ -65,8 +69,11 @@ nasm -f elf32 src/cpu/cpu.s -o cpu_asm.o
 
 # linking
 echo "\nLinking...\n"
-i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o elf.o _proc.o 
-# clean (rm *.o)
+#i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o elf.o _proc.o 
+i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel *.o
+
+
+#clean (rm *.o)
 rm *.o
 
 # make ISO

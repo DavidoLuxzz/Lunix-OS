@@ -138,41 +138,11 @@ void __execute_full(const char* command){
         printf("- cd [name]                      # Change current directory\n");
         printf("- help                           # List built-in commands\n");
         return;
-    } else if (strcmd(command, "clear")){
-        cmd_clear();
-        return;
-    } else if(strcmd(command, "exit")){
-        // TODO
-        __global_exit = true;
-        return;
-    } else if (strcmd(command, "disk")){
-        ide_dump_drives();
-        return;
-    } else if (strcmd(command, "install")){
-        uint32_t where = 0; // resiti zbog partition (ali prvi sektor mora biti za boot)
-        __os_install_to_disk(0,1,IDE_ATAPI, where);
-        *(char*) 0xb8002 = '?';
-        return;
-    } else if (strcmd(command, "dsktest")){
-        if (argc < 1){
-            printf("^4error:^_ no enough arguments\n");
-            return;
-        }
-        uint32_t drv = stoi(command+tokens[0]);
-        printf("[ ^fINFO^_ ] Reading from Drive %u:\n", drv);
-        uint16_t _r_buffer[1024];
-        memset(_r_buffer, 0, 2048);
-        uint8_t err = ide_atapi_read(drv, 24, 1, 0, _r_buffer);
-        for (int i=0; i<4; i++){
-            printf("0x%x ", _r_buffer[i]);
-        }
-        newLine();
-        ide_print_error(drv, err);
-        return;
-    } else if (strcmd(command, "vol")){
-        cmd_vol(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "ils")){
+    } else if (strcmd(command, "clear")) clear_screen();
+    else if (strcmd(command, "disk")) ide_dump_drives();
+    else if (strcmd(command, "install")) __os_install_to_disk(0,1,IDE_ATAPI, 0);
+    else if (strcmd(command, "vol")) cmd_vol(command, argc, tokens);
+    else if (strcmd(command, "ils")){
         if (!argc) {
             printf("No LBA given\n");
             return;
@@ -180,51 +150,24 @@ void __execute_full(const char* command){
         uint32_t drv = 1; //set
         uint32_t lba = stoi(command+tokens[0]);
         __os_iso_list_dir(drv, lba);
-        return;
-    } else if (strcmd(command, "part")){
-        cmd_part(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "fs")){
-        cmd_fs(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "ls")){
-        cmd_ls(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "cd")){
-        cmd_cd(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "mkdir")){
-        cmd_mkdir(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "lba")){
-        printf("%u\n",currentDir.entry.lba);
-        return;
-    } else if (strcmd(command, "rmdir")){
-        cmd_rmdir(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "new")){
+   }else if (strcmd(command, "part")) cmd_part(command, argc, tokens);
+    else if (strcmd(command, "fs")) cmd_fs(command, argc, tokens);
+    else if (strcmd(command, "ls")) cmd_ls(command, argc, tokens);
+    else if (strcmd(command, "cd")) cmd_cd(command, argc, tokens);
+    else if (strcmd(command, "mkdir")) cmd_mkdir(command, argc, tokens);
+    else if (strcmd(command, "lba")) printf("%u\n",currentDir.entry.lba);
+    else if (strcmd(command, "rmdir")) cmd_rmdir(command, argc, tokens);
+    else if (strcmd(command, "new")) {
         if (argc < 1) {
             printf("new: no file name given\n"); return;
         }
         int err = lxfs_create_new_file(&currentDir, command+tokens[0], 0777, 0, 512);
         if (err) printf("error: %u\n", err);
-        return;
-    } else if (strcmd(command, "rm")){
-        cmd_rm(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "finfo")){
-        cmd_finfo(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "led")){
-        cmd_led(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "run")){
-        cmd_run(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "shut")){
-        cmd_shut(command, argc, tokens);
-        return;
-    } else if (strcmd(command, "elf")){
+   }else if (strcmd(command, "rm")) cmd_rm(command, argc, tokens);
+    else if (strcmd(command, "led")) cmd_led(command, argc, tokens);
+    else if (strcmd(command, "run")) cmd_run(command, argc, tokens);
+    else if (strcmd(command, "shut")) cmd_shut(command, argc, tokens);
+    else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
         else {
             elf_prog_data pd;
@@ -233,7 +176,6 @@ void __execute_full(const char* command){
             printf("File offset: %p\nMemory size: %p\n", pd.memoff, pd.memsz);
             printf("Entry point address: %p\n", pd.entry);
         }
-        return;
     } else if (strcmd(command, "cpbin")){
         char tmp[12];
         printf("Destination drive will be assumed to be 0\nEnter source drive: ");
@@ -250,10 +192,10 @@ void __execute_full(const char* command){
         ata_disk_write(0, 9696,sects, buf);
 
         kfree(buf);
-        return;
+    } else {
+        print("unknown command: "); write(command, strdlen(command, ' '));
+        newLine();
     }
-    print("unknown command: "); write(command, strdlen(command, ' '));
-    newLine();
 }
 
 void __dump_multiboot_info(struct multiboot_info* bi){

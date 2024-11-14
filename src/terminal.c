@@ -17,6 +17,8 @@ bool _showing_his;
 uint32_t _term_stdin_current_len;
 bool _term_stdin_flushed = false;
 
+bool ___term_ctrl_on = false;
+
 void __term_stdin_append(char c){
     if (_term_stdin_flushed) {
         _term_stdin_flushed = false;
@@ -89,7 +91,7 @@ char* const __term_get_and_update_stdin(){
     return __term_get_stdin();
 }
 
-bool __term_check_keycode(uint32_t keycode){
+bool __term_check_keycode(uint32_t keycode, char press){
     switch (keycode){
         case K_UP:
             if (!_showing_his){
@@ -121,6 +123,12 @@ bool __term_check_keycode(uint32_t keycode){
                 *(char*) 0xb8000 = _term_stdin_current_len + '0';
             }
             return 1;
+        case K_CTRL:
+            ___term_ctrl_on = !press;
+            return 1;
+        case 46: // C
+            if (___term_ctrl_on) for(;;);
+            return 0;
         case 0xE0:
             return 1;
         default:
