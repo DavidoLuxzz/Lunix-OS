@@ -1,5 +1,8 @@
 #include <sys/syscall.h>
 #include <stdio.h>
+#include <sys/process.h>
+#include <string.h>
+#include <unistd.h>
 
 void *__syscall_functions[__NUM_SYSCALLS];
 uint8_t __syscall_argc[__NUM_SYSCALLS];
@@ -30,7 +33,7 @@ void __exec_sys_call(struct InterruptRegisters* regs){
     void (*fn)();
     fn = __syscall_functions[eax];
     if (eax>=__NUM_SYSCALLS || !fn) {
-        printf("invalid system call!\n");
+        printf("invalid system call! (EIP = %p)\n", regs->eip);
         return;
     }
     // execution
@@ -73,6 +76,7 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <sys/drivers/disk_ata.h>
 #include <sys/kmalloc.h>
 #include <fs/lxfs.h>
+#include <sys/elf.h>
 extern LXFS_DIR currentDir;
 SCDEF(bool, newproc, const char* fname) {
     LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
@@ -85,15 +89,50 @@ SCDEF(bool, newproc, const char* fname) {
         printf("error: size=0\n");
         return 6;
     }
-    printf("creating new process lba=%u\n", lba);
-    void (*_where)() = kmalloc(size * 512);
-    ata_disk_read(0, lba, size, _where);
+    // ELF stuff
+    char* bytes = kmalloc(size * 512);
+    if (!bytes) { logerr("kmalloc error"); return 6; }
+    ata_disk_read(0, lba,size, bytes);
+    uint32_t s_num = elf_get_num_segments(bytes);
+    elf_prog_data *pd = (elf_prog_data*) kmalloc(sizeof(elf_prog_data) + (s_num)*sizeof(elf_segment));
+    if (elf_load_raw(bytes, pd)){
+        kfree(bytes); return 1;
+    }
+
+    // create space for new program
+    char* program_memory = kmalloc(pd->memsz);
+    // now for each segment load it into memory
+    for (int i=0; i<pd->s_num; i++){
+        elf_segment seg = pd->s_data[i];
+        // printf("Loaded segment from foff=%p to off=%p with memsz=0x%x\n",seg.s_foffset, seg.s_offset, seg.s_memsz);
+        memcpy(program_memory+seg.s_offset, bytes+seg.s_foffset, seg.s_memsz);
+    }
+    kfree(bytes);
+    kfree(pd);
+    // ELF program data is now loaded
+    // next create a process
+    process_t newp;
+    newp.stat = P_ST_RUNNING;
+    memset(newp.name, 0, 23);
+    strcpy(newp.name, fname);
+    newp.addr = (void*)program_memory;
+    newp.p_vaddr = pd->p_vaddr;
+    
+    proc_set_current(&newp);
+    // then load a program into memory
+    // it doesn't affect the workflow if you load the program before creating a process
+    void (*_where)() = (void*) (program_memory+pd->entry);
     _where();
-    kfree(_where);
+
+    kfree(program_memory);
     return 0;
 }
-#include <unistd.h>
-SCDEF(void, write, const char* str, size_t len) {
+SCDEF(void, write, const char* _str, size_t len) {
+    uint32_t memfix = (uint32_t)proc_get_current()->addr - proc_get_current()->p_vaddr;
+    // printf("_str: %p\nmemfix: %u\n", _str, memfix);
+    const char* str = _str + memfix;
+    // printf("write called!\nstr: %p\nlen=%u\n", str, len);
+    // printf("first value = %x (%c)\n", *str&0xFF, *str&0xFF);
     write(str, len);
 }
 

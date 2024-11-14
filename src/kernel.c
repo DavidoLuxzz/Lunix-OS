@@ -227,9 +227,11 @@ void __execute_full(const char* command){
     } else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
         else {
-            elf_ph_entry pe;
-            elf_get_program_header(&currentDir, command+tokens[0], &pe);
-            printf("Type: %x, Offset: %p\n", pe.p_type, pe.p_offset);
+            elf_prog_data pd;
+            elf_load_file(&currentDir, command+tokens[0], &pd);
+            printf("-- PROGRAM DATA: --\n");
+            printf("File offset: %p\nMemory size: %p\n", pd.memoff, pd.memsz);
+            printf("Entry point address: %p\n", pd.entry);
         }
         return;
     } else if (strcmd(command, "cpbin")){
@@ -237,12 +239,15 @@ void __execute_full(const char* command){
         printf("Destination drive will be assumed to be 0\nEnter source drive: ");
         nread(tmp, 10);
         uint8_t sdrv = stoi(tmp)&0xFF;
+        printf("How many sectors will be copied: ");
+        nread(tmp, 10);
+        uint32_t sects = stoi(tmp);
         char* buf = (char*)kmalloc(2048);
-        ata_disk_read(sdrv, 0x0,1, buf);
+        ata_disk_read(sdrv, 0x0,sects, buf);
         
         write(buf, 4);
 
-        ata_disk_write(0, 9696,4, buf);
+        ata_disk_write(0, 9696,sects, buf);
 
         kfree(buf);
         return;

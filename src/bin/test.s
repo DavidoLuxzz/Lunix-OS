@@ -1,12 +1,10 @@
-; CREATE ELF FILE EXECUTABLE LOADER
-; FIX RELATIVE ADDRESSES
+; CREATE ELF FILE EXECUTABLE LOADER         - jesam
+; FIX RELATIVE ADDRESSES                    - jesam
 ; poenta OSa je da ga pravis za sebe, pa i nije toliko bitno da li ces sjebati OS
-; jedno resenje za REL-ADDR jeste da kernel namesti CS,DS,ESP i EBP registere pre lansiranja procesa
-; -> drugo resenje je da kernel preda procesu absolutnu adresu procesa i program ga sacuva u memoriji
-;   pa kad program zeli da koristi svoju memoriju moze koristiti sacuvanu adresu kao bazu a relativnu datu adresu kao offset
     section .text
     global _start
 _start:
+    call    _testf
     ; write syscall
     mov     eax,    0x2
     mov     ebx,    msg
@@ -16,7 +14,16 @@ _start:
 
     section .data
 msg:    db  "hello niggas", 10, 0
+ciger:  db  "mjau mjau ma mjau", 10, 0
 
     section .nigger
-; niggers
-_a:     db  "niggers are here", 10, 0
+    global  _testf
+_testf:
+    mov     byte [0xb8124], '*' 
+    mov     eax,    0x2
+    mov     ebx,    ciger
+    mov     ecx,    18
+    int     0x80
+    ret
+
+
