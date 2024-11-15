@@ -14,13 +14,13 @@ void init_system_calls(){
     memset(__syscall_functions, 0, __NUM_SYSCALLS*sizeof(int*));
     // then initialize them
     __syscall_functions[0] = __nosys;
-    __syscall_functions[1] = __execve;
+    __syscall_functions[1] = __exec;
     __syscall_functions[2] = __write;
     // later initialize syscall functions arguments count
     memset(__syscall_argc, 0, __NUM_SYSCALLS); // don't remove (set all to zero)
     // init argc-s
     // __nosys argc already at 0
-    __syscall_argc[1] = __SYSCALL_execve_ARGC;
+    __syscall_argc[1] = __SYSCALL_exec_ARGC;
     __syscall_argc[2] = __SYSCALL_write_ARGC;
 }
 
@@ -78,7 +78,7 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <fs/lxfs.h>
 #include <sys/elf.h>
 extern LXFS_DIR currentDir;
-SCDEF(bool, execve, const char* fname) {
+SCDEF(bool, exec, const char* fname) {
     LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
     
     uint32_t lba = lxfs_get_data_lba(e->lba);
@@ -117,6 +117,7 @@ SCDEF(bool, execve, const char* fname) {
     strcpy(newp.name, fname);
     newp.addr = (void*)program_memory;
     newp.p_vaddr = pd->p_vaddr;
+    newp.daddr = (uint32_t)program_memory - pd->p_vaddr;
     
     proc_set_current(&newp);
     // then load a program into memory
@@ -127,10 +128,12 @@ SCDEF(bool, execve, const char* fname) {
     kfree(program_memory);
     return 0;
 }
+SCDEF(uint32_t, get_paddr, uint32_t addr){
+    return addr + proc_get_current()->daddr;
+}
 SCDEF(void, write, const char* _str, size_t len) {
-    uint32_t memfix = (uint32_t)proc_get_current()->addr - proc_get_current()->p_vaddr;
     // printf("_str: %p\nmemfix: %u\n", _str, memfix);
-    const char* str = _str + memfix;
+    const char* str = _str + proc_get_current()->daddr;
     // printf("write called!\nstr: %p\nlen=%u\n", str, len);
     // printf("first value = %x (%c)\n", *str&0xFF, *str&0xFF);
     write(str, len);

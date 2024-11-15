@@ -7,7 +7,7 @@ __CMD_FUNC(cmd_run) {
     if (argc < 1) {
         printf("usage: run [execname]\n"); return 0;
     }
-    __execve(command+tokens[0]);
+    __exec(command+tokens[0]);
     return 0;
 }
 

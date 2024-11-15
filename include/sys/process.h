@@ -21,6 +21,10 @@ struct process_t {
     /* The virtual address where's process expected to be.
      * Used by ELF file formats */
     uint32_t    p_vaddr;
+    /* The delta address of this process
+     * physical address = virtual address + delta address
+     */
+    uint32_t    daddr; // daddr = addr - p_vaddr
 };
 // Type definition of process_t
 typedef struct process_t process_t;
