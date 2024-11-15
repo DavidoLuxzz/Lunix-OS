@@ -14,13 +14,13 @@ void init_system_calls(){
     memset(__syscall_functions, 0, __NUM_SYSCALLS*sizeof(int*));
     // then initialize them
     __syscall_functions[0] = __nosys;
-    __syscall_functions[1] = __newproc;
+    __syscall_functions[1] = __execve;
     __syscall_functions[2] = __write;
     // later initialize syscall functions arguments count
     memset(__syscall_argc, 0, __NUM_SYSCALLS); // don't remove (set all to zero)
     // init argc-s
     // __nosys argc already at 0
-    __syscall_argc[1] = __SYSCALL_newproc_ARGC;
+    __syscall_argc[1] = __SYSCALL_execve_ARGC;
     __syscall_argc[2] = __SYSCALL_write_ARGC;
 }
 
@@ -78,7 +78,7 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <fs/lxfs.h>
 #include <sys/elf.h>
 extern LXFS_DIR currentDir;
-SCDEF(bool, newproc, const char* fname) {
+SCDEF(bool, execve, const char* fname) {
     LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
     
     uint32_t lba = lxfs_get_data_lba(e->lba);
@@ -135,8 +135,6 @@ SCDEF(void, write, const char* _str, size_t len) {
     // printf("first value = %x (%c)\n", *str&0xFF, *str&0xFF);
     write(str, len);
 }
-
-
 
 
 
