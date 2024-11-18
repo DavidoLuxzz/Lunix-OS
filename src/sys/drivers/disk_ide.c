@@ -220,33 +220,6 @@ unsigned int BAR4) {
 
          count++;
       }
-   // 4- Print Summary:
-    for (int i = 0; i < 4; i++)
-        if (ide_devices[i].reserved == 1) {
-            print("Found ");
-            unsigned short _t = ide_devices[i].type;
-            if (_t) print("ATAPI");
-            else print("ATA");
-            unsigned int _s = ide_devices[i].size * 512;
-            unsigned int _dsz, _ti;
-            const char* _szt[4] = {"B","kB","MB","GB"};
-            if (_s < 1024) {
-                _dsz = _s;
-                _ti = 0;
-            } else if (_s < 1024*1024) {
-                _dsz = _s / 1024;
-                _ti = 1;
-            } else {
-                _dsz = _s / 1024 / 1024;
-                _ti = 2;
-            }
-            printf(" Drive (%u", _dsz);
-            print(_szt[_ti]);
-            print(") - ");
-            print(ide_devices[i].model);
-            print("\n");
-        }
-    print("NOTE: storage sizes are assumed to be for devices with sector size = 512 bytes\n");
     print("Installing IDE driver interrupt handler (IRQ 14, 15)\n");
     ide_install_handler();
 }

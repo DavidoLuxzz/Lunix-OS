@@ -37,11 +37,10 @@ enum driver_type_enum {
     DT_DISK_RESERVED0,
     DT_DISK_RESERVED1,
     // Keyboard driver types
-    DT_KEYBOARD0,   // Primary keyboard driver slot
-    DT_KEYBOARD1,   // Secondary keyboard driver slot
+    DT_KEYBOARD_PS2,
+    DT_KEYBOARD_STD,
     // Mouse driver types
-    DT_MOUSE0,      // Primary mouse driver slot
-    DT_MOUSE1,      // Secondary mouse driver slot
+    DT_STD_MOUSE,
     // Graphics driver types
     DT_VIDEO_VGA,
     DT_VIDEO_INTEL,
@@ -49,17 +48,58 @@ enum driver_type_enum {
     DT_VIDEO_RESERVED1,
     DT_VIDEO_RESERVED2,
     DT_VIDEO_RESERVED3,
-
-    // leave as the last value
-    DT_LAST
+    // Filesystem driver types
+    DT_FS_LXFS,
+    DT_FS_ISO9660,
+    DT_FS_FAT12,
+    DT_FS_FAT16,
+    DT_FS_FAT32,
+    DT_FS_EXFAT,
+    DT_FS_NTFS,
+    DT_FS_EXT,
+    DT_FS_EXT2,
+    DT_FS_EXT3,
+    DT_FS_EXT4,
+    DT_FS_XFS,
+    DT_FS_ZFS
 };
-/* Driver type enum will be used as slots for drivers.
+
+/* All driver slots enum 
+ * Definitions start with prefix 'DS' */
+enum driver_slots_enum {
+    // Drive job drivers
+    DS_DISK0,
+    DS_DISK1,
+    DS_CDDVD,
+    DS_FLOPPY,
+    // Keyboard driver slots (2 slots for max. of 2 keyboards at the same time)
+    DS_KEYBOARD0,
+    DS_KEYBOARD1,
+    // Mouse driver slots (same as keyboard)
+    DS_MOUSE0,
+    DS_MOUSE1,
+    // Video graphics driver slot
+    DS_VIDEO,
+    // Filesystem driver slots for a max. of 4 filesystems open at once
+    DS_FILESYSTEM0,
+    DS_FILESYSTEM1,
+    DS_FILESYSTEM2,
+    DS_FILESYSTEM3,
+
+    // leave for last
+    DS_LAST
+};
+/* Driver slots enum will be used as slots for drivers.
  * Example: If a driver has a driver type DT_FLOPPY, when installing it would be loaded
  *          to driver slot with index DT_FLOPPY and it will be set as the main driver for managing
  *          with floppies.
  *          If an another driver with type DT_FLOPPY installs, then the driver for floppies that was
  *          installed before will be uninstalled and thus replaced with a new one.
  */
+
+/** Function for initializing the global driver slots array.
+ * Will be set all to zero (0). */
+void    init_driver_array(void);
 
 /** Function for installing a driver to a slot specified in its driver type
  * Returns 0 if successful, otherwise error code */

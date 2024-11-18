@@ -22,6 +22,7 @@
 #include <fs/lxfs.h>
 #include <sys/syscall.h>
 #include <sys/elf.h>
+#include <sys/driver.h>
 
 #define KERNEL_BOOT_START   0x00100000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -52,8 +53,10 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("[ ^2OK^7 ] Memory allocation initialized\n");
     ide_initialize(0,0,0,0,0);
     printf("[ ^2OK^7 ] IDE/ATAPI driver initialized\n"); 
-    
     init_system_calls();
+    printf("[ ^2OK^7 ] System call table initialized\n");
+    init_driver_array();
+    printf("[ ^2OK^7 ] Global driver slots array initialized\n");
 
     if (__cpu_check()){
         char _cpu_vend_raw[12];

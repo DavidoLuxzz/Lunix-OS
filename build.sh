@@ -3,54 +3,33 @@ export CFLAGS="-m32 -I$PWD/include -fno-stack-protector -fno-builtin -c"
 export GCC=i686-elf-gcc
 
 # gcc
-echo "gcc kernel.c"
 $GCC $CFLAGS src/kernel.c -o kernel.o
-echo "gcc vga.c"
 $GCC $CFLAGS src/vga.c -o vga.o
-echo "gcc gdt.c"
 $GCC $CFLAGS src/gdt/gdt.c -o gdt.o
-echo "gcc util.c"
 $GCC $CFLAGS src/util.c -o util.o
-echo "gcc idt.c"
 $GCC $CFLAGS src/interrupts/idt.c -o idt.o
-echo "gcc stdio.c"
 $GCC $CFLAGS src/stdlib/stdio.c -o stdio.o
-echo "gcc keyboard.c"
 $GCC $CFLAGS src/keyboard.c -o keyboard.o
-echo "gcc timr.c"
 $GCC $CFLAGS src/timer.c -o timer.o
-echo "gcc kmalloc/kmalloc.c"
 $GCC $CFLAGS src/kmalloc/kmalloc.c -o kmalloc.o
-echo "gcc unistd.c"
 $GCC $CFLAGS src/stdlib/unistd.c -o unistd.o
-echo "gcc terminal.c"
 $GCC $CFLAGS src/terminal.c -o terminal.o
-echo "gcc string.c"
 $GCC $CFLAGS src/stdlib/string.c -o string.o
-echo "gcc commands.c"
 $GCC $CFLAGS src/sys/commands.c -o commands.o
-echo "gcc drivers/disk_ata.c"
 $GCC $CFLAGS src/sys/drivers/disk_ata.c -o disk_ata.o
-echo "gcc drivers/cd_atapi.c"
 $GCC $CFLAGS src/sys/drivers/cd_atapi.c -o atapi.o
-echo "gcc fs/lxfs.c"
 $GCC $CFLAGS src/fs/lxfs.c -o lxfs.o
-echo "gcc drivers/disk_ide.c"
 $GCC $CFLAGS src/sys/drivers/disk_ide.c -o disk_ide.o
-echo "gcc inst.c"
 $GCC $CFLAGS src/inst.c -o os_install.o
-echo "gcc disk/partition.c"
 $GCC $CFLAGS src/disk/partition.c -o partio.o
-echo "gcc syscall.c"
 $GCC $CFLAGS src/sys/syscall.c -o syscall.o
-echo "gcc sys/elf.c"
 $GCC $CFLAGS src/sys/elf.c -o elf.o
-echo "gcc sys/_process.c"
 $GCC $CFLAGS src/sys/_process.c -o _proc.o
+$GCC $CFLAGS src/sys/driver.c -o _driver.o
+
 # compile system commands
 echo "compiling system commands"
 $GCC $CFLAGS src/sys/commands/*.c 
-
 
 # space between gcc and nasm compilation
 echo

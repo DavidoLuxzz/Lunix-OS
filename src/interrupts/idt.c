@@ -168,8 +168,6 @@ void irq_handler(struct InterruptRegisters* regs){
 
     if (handler){
         handler(regs);
-    } else {
-        printf("unknown int\n");
     }
 
     if (regs->int_no >= 40){
