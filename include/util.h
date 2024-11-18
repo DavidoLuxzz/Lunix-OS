@@ -15,6 +15,7 @@ void insl(uint16_t __port, void *__buf, unsigned long __n);
 void outsl(uint16_t __port, const void *__buf, unsigned long __n);
 void logerr(const char*);
 void logwarn(const char*);
+void log(const char*);
 
 #define CEIL_DIV(a,b) (((a + b) - 1)/b)
 

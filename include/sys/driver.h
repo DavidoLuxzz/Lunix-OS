@@ -15,10 +15,17 @@ struct driver_t {
     char name[24];
     /* Type of a driver, which is one in driver type set all defined below */
     uint16_t type;
-    /* Install and uninstall functions all drivers should contain.
-     * As the names tell, they are used to install or uninstall a driver */
-    void (*install)();
-    void (*uninstall)();
+    /* Driver functions that will be set as target redirect functions.
+     * ex. When calling ata_disk_read(), func0() will be called instead.
+     * When installing a driver, global function address will be set as the driver's */
+    void (*func0)();
+    void (*func1)();
+    void (*func2)();
+    void (*func3)();
+    void (*func4)();
+    void (*func5)();
+    void (*func6)();
+    void (*func7)();
 };
 // Type definition of driver_t struct
 typedef struct driver_t driver_t;
