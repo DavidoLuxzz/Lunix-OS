@@ -86,21 +86,11 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     lxfs_get_dir(0,&currentDir);
     lxfs_load_filesystem();
     
-    
-    uint32_t test_iptr = 0x0;
-    test_iptr = _getip();
-    printf("EIP: %p\n", test_iptr);
-
-    printf("printf at: %p\n", printf);
-
     k_setKeyboardMode(K_MODE_TERMINAL);
-    print("Keyboard mode set to: K_MODE_TERMINAL\n");
   
     // --- RESET SCREEN --- //
     // clear_screen();
-    print("LunixOS 0.3.2\n\n");
-    
-    // __dump_multiboot_info(bootInfo);
+    print("LunixOS 0.4.3\n\n");
     
     char command[TERMINAL_MAX_BUFFER_LENGTH];
     __global_exit = 0;

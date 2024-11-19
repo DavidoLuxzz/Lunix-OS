@@ -30,7 +30,7 @@ void _lxfs_scan_dir(uint32_t lba){
             LXFS_ENTRY e = entries[i];
             if (e.flags & LXFS_VALID){ // valid dir
                 uint8_t type = (e.type_and_perms>>12) & 0xFF; 
-                printf("LXFS: found node '%s' (%s)\n", e.name, _lxfs_get_type_name(type));
+                if (__lxfs_fs_log) printf("LXFS: found node '%s' (%s)\n", e.name, _lxfs_get_type_name(type));
                 if (type == LXFS_FOLDER){
                     if (e.lba<4) continue;
                     uint32_t bitmap_lba = e.lba/4;
