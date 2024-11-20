@@ -104,6 +104,9 @@ enum driver_slots_enum {
  *          installed before will be uninstalled and thus replaced with a new one.
  */
 
+// Type definition of function array
+typedef void(* FUNCARRAY)();
+
 /** Function for initializing the global driver slots array.
  * Will be set all to zero (0). */
 void    init_driver_array(void);

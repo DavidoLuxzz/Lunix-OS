@@ -23,6 +23,7 @@
 #include <sys/syscall.h>
 #include <sys/elf.h>
 #include <sys/driver.h>
+#include <sys/libkern.h>
 
 #define KERNEL_BOOT_START   0x00100000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
