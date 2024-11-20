@@ -15,17 +15,20 @@ struct driver_t {
     char name[24];
     /* Type of a driver, which is one in driver type set all defined below */
     uint16_t type;
+    /* Every driver oftern needs to be initialized before use.
+     * Will be invoked on every installation. So it would be better to be valid.  */
+    void (*init)();
     /* Driver functions that will be set as target redirect functions.
      * ex. When calling ata_disk_read(), func0() will be called instead.
      * When installing a driver, global function address will be set as the driver's */
-    void (*func0)();
-    void (*func1)();
-    void (*func2)();
-    void (*func3)();
-    void (*func4)();
-    void (*func5)();
-    void (*func6)();
-    void (*func7)();
+    void *func0;
+    void *func1;
+    void *func2;
+    void *func3;
+    void *func4;
+    void *func5;
+    void *func6;
+    void *func7;
 };
 // Type definition of driver_t struct
 typedef struct driver_t driver_t;
@@ -113,14 +116,14 @@ void    init_driver_array(void);
 
 /** Function for installing a driver to a slot specified in its driver type
  * Returns 0 if successful, otherwise error code */
-int     driver_install(struct driver_t*);
+int     driver_install(const struct driver_t*);
 
 /** Function for uninstalling a driver that was before installed */
 /* It is as simple as:
  *   - invoke driver.uninstall();
  *   - free the slot used by driver
  */
-void    driver_uninstall(struct driver_t*);
+void    driver_uninstall(const struct driver_t*);
 
 
 

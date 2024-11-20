@@ -1,6 +1,6 @@
 #include <fs/lxfs.h>
 #include <util.h>
-#include <sys/drivers/disk_ata.h>
+#include <sys/libkern.h>
 #include <math.h>
 #include <sys/kmalloc.h>
 #include <stdio.h>
@@ -78,16 +78,20 @@ void lxfs_use_partition(DISK_PARTITION *dpart){
 void _lxfs_get_entry(DISK_PARTITION *dpart, uint32_t parent_lba, uint8_t id, LXFS_ENTRY *e){
     uint32_t sector = dpart->part.lba + parent_lba + (id/8);
     LXFS_ENTRY entries[8]; // 8 entries in 512 byte sector
-    ata_disk_read(dpart->drive, sector, 1, (uint16_t*)entries);
+    disk_change_drive(dpart->drive);
+    disk_read(sector, 1, (uint16_t*)entries);
     uint8_t id_in_sect = (id%8) * sizeof(LXFS_ENTRY);
     char* bytes = (char*)entries + id_in_sect;
     memcpy(e, bytes, sizeof(LXFS_ENTRY));
+    disk_change_drive(0);
 }
 
 void lxfs_get_entry(uint32_t parent_lba, uint8_t id, LXFS_ENTRY *e){  
     uint32_t sector = _dskpart.part.lba + parent_lba + (id/8);                                  
     LXFS_ENTRY entries[8]; // 8 entries in 512 byte sector                                    
-    ata_disk_read(_dskpart.drive, sector, 1, (uint16_t*)entries);                               
+    disk_change_drive(_dskpart.drive);
+    disk_read(sector, 1, (uint16_t*)entries);                               
+    disk_change_drive(0);
     uint8_t id_in_sect = (id%8) * sizeof(LXFS_ENTRY);                                         
     char* bytes = (char*)entries + id_in_sect;                                                
     memcpy(e, bytes, sizeof(LXFS_ENTRY));                                                     
@@ -97,17 +101,21 @@ void lxfs_set_entry(uint32_t parent_lba, uint8_t id, LXFS_ENTRY *e){
     uint32_t sector = _dskpart.part.lba + parent_lba + (id/8);
 
     LXFS_ENTRY entries[8];
-    ata_disk_read(_dskpart.drive, sector, 1, (uint16_t*)entries);
+    disk_change_drive(_dskpart.drive);
+    disk_read(_dskpart.drive, sector, 1, (uint16_t*)entries);
 
     uint8_t id_in_sect = (id%8);
     memcpy(&entries[id_in_sect], e, sizeof(LXFS_ENTRY));
 
-    ata_disk_write(_dskpart.drive, sector, 1, (uint16_t*)entries);
+    disk_write(_dskpart.drive, sector, 1, (uint16_t*)entries);
+    disk_change_drive(0);
 }
 
 void lxfs_get_all_entries(uint32_t parent_lba, LXFS_ENTRY *entries){
     uint32_t sector = _dskpart.part.lba + parent_lba;
-    ata_disk_read(_dskpart.drive, sector, 4, (uint16_t*)entries);
+    disk_change_drive(_dskpart.drive);
+    disk_read(sector, 4, (uint16_t*)entries);
+    disk_change_drive(0);
 }
 
 uint32_t _lxfs_find_free_space(){
@@ -307,7 +315,7 @@ uint32_t lxfs_find_entry_id_with_lba(uint32_t parent_lba, uint32_t req_lba){
 void lxfs_get_dir(uint32_t parent_lba, LXFS_DIR *dir){  
     uint32_t sector = _dskpart.part.lba + parent_lba;
     LXFS_DIR dirs[4]; // 4 dir structs in 512 byte sector
-    ata_disk_read(_dskpart.drive, sector, 1, (uint16_t*)dirs);
+    disk_read(_dskpart.drive, sector, 1, (uint16_t*)dirs);
     memcpy(dir, dirs, 128);
 }
 
@@ -315,11 +323,11 @@ void lxfs_set_dir(uint32_t parent_lba, LXFS_DIR *dir){
     uint32_t sector = _dskpart.part.lba + parent_lba;
 
     LXFS_DIR dirs[4];
-    ata_disk_read(_dskpart.drive, sector, 1, (uint16_t*)dirs);
+    disk_read(_dskpart.drive, sector, 1, (uint16_t*)dirs);
 
     memcpy(dirs, dir, 128);
 
-    ata_disk_write(_dskpart.drive, sector, 1, (uint16_t*)dirs);
+    disk_write(_dskpart.drive, sector, 1, (uint16_t*)dirs);
 }
 
 

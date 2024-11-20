@@ -2,7 +2,23 @@
 #include <stdio.h>
 #include <util.h>
 
-void ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
+const driver_t __ATA_PIO_DRIVER = {"Default ATA PIO driver", DT_ATA_PIO, &ata_disk_init, &ata_change_drive, &ata_disk_read, &ata_disk_write};
+
+const driver_t *ata_get_driver(){
+    return &__ATA_PIO_DRIVER;
+}
+
+void ata_disk_init(){
+    printf("Initializing ATA PIO driver\n");
+}
+
+uint8_t __ata_current_drive = 0;
+
+void ata_change_drive(uint8_t drv){
+    __ata_current_drive = drv;
+}
+
+void _ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
     uint16_t *buffer = (uint16_t*)_buffer;
     for (uint32_t i=0; i < num_sectors; i++) {
         outb(0x1F6, (0xE0 | (drv << 4) | ((sector >> 24) & 0x0F))); // drive | 24-31 LBA bits
@@ -34,7 +50,7 @@ void ata_disk_read(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_bu
     }
 }
 
-uint8_t ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
+uint8_t _ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, void *_buffer){
     uint8_t err;
     uint16_t *buffer = (uint16_t*)_buffer;
     for (uint32_t i=0; i < num_sectors; i++) {
@@ -71,6 +87,12 @@ uint8_t ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, void 
     return err;
 }
 
+void ata_disk_read(uint32_t sector, uint32_t no_sect, void* buf){
+    _ata_disk_read(__ata_current_drive, sector, no_sect, buf);
+}
+void ata_disk_write(uint32_t sector, uint32_t no_sect, void* buf){
+    _ata_disk_write(__ata_current_drive, sector, no_sect, buf);
+}
 
 // Secondary bus
 void ata_disk_read2(uint8_t drv, uint32_t sector, uint32_t num_sectors, uint16_t *buffer){     

@@ -58,6 +58,8 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("[ ^2OK^7 ] System call table initialized\n");
     init_driver_array();
     printf("[ ^2OK^7 ] Global driver slots array initialized\n");
+    
+    driver_install(ata_get_driver());
 
     if (__cpu_check()){
         char _cpu_vend_raw[12];
@@ -179,11 +181,13 @@ void __execute_full(const char* command){
         nread(tmp, 10);
         uint32_t sects = stoi(tmp);
         char* buf = (char*)kmalloc(2048);
-        ata_disk_read(sdrv, 0x0,sects, buf);
+        disk_change_drive(sdrv);
+        disk_read(0x0,sects, buf);
         
         write(buf, 4);
 
-        ata_disk_write(0, 9696,sects, buf);
+        disk_change_drive(0);
+        disk_write(9696,sects, buf);
 
         kfree(buf);
     } else {

@@ -1,6 +1,6 @@
 #include <sys/commands.h>
 #include <stdio.h>
-#include <sys/drivers/disk_ata.h>
+#include <sys/libkern.h>
 #include <fs/lxfs.h>
 #include <util.h>
 #include <vga.h>
@@ -21,7 +21,7 @@ __CMD_FUNC(cmd_led){
     printf("Opening file at absolute LBA=%u\n",alba);
     // load file to memory
     char bytes[e->size*512];
-    ata_disk_read(0, alba, e->size, bytes);
+    disk_read(0, alba, e->size, bytes);
     // start editor
     printf("Lunix editor (v0.0.1)\n");
     uint32_t view_range, current_byte=0;
@@ -72,7 +72,7 @@ __CMD_FUNC(cmd_led){
             read(tmp);
             current_byte = stoi(tmp);
         } else if (strcmd(tmp, "w")){
-            ata_disk_write(0, alba, e->size, bytes);
+            disk_write(0, alba, e->size, bytes);
             printf("Saved file at LBA=%u (\"%s\")\n",alba,command+tokens[0]);
         } else if (strcmd(tmp, "help")){
             printf("Commands:\n  r: preview file from current byte\n  q: quit editor without saving\n  w: save changes\n  e: edit selected section\n  mv: move to byte\n  rs: text preview from current byte\n");
