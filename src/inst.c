@@ -1,6 +1,6 @@
 #include <os/install.h>
 #include <sys/drivers/disk_h.h> // ide_atapi_read(drv,lba,no_sects,0,buffer)
-#include <sys/libkern.h> // disk_write(lba, no_sects, buffer)
+#include <sys/drivers/disk_ata.h> // disk_write(lba, no_sects, buffer)
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/kmalloc.h>
@@ -192,10 +192,10 @@ void __os_install_to_disk(uint8_t dest_drive, uint8_t drive, uint16_t drv_type, 
             printf("ide read error\n");
             return;
         }
-        disk_write(dest_drive, lba + 4*sect, 1, _buf);
-        disk_write(dest_drive, lba + 4*sect+1, 1, _buf + (256));
-        disk_write(dest_drive, lba + 4*sect+2, 1, _buf + (512));
-        disk_write(dest_drive, lba + 4*sect+3, 1, _buf + (768));
+        _ata_disk_write(dest_drive, lba + 4*sect, 1, _buf);
+        _ata_disk_write(dest_drive, lba + 4*sect+1, 1, _buf + (256));
+        _ata_disk_write(dest_drive, lba + 4*sect+2, 1, _buf + (512));
+        _ata_disk_write(dest_drive, lba + 4*sect+3, 1, _buf + (768));
         
         printf("done loop\n");
     }

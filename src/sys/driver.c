@@ -33,9 +33,9 @@ int driver_install(const driver_t *driver){
     printf("[ ^6DRV^_ ] Installing driver %s\n", driver->name);
     switch (driver->type){
         default:
-            disk_change_drive = (FUNCARRAY) driver->func0;
-            disk_read = (FUNCARRAY) driver->func1;
-            disk_write = (FUNCARRAY) driver->func2;
+            *(void**)(&disk_change_drive) = driver->func0;
+            *(void**)(&disk_read) = driver->func1;
+            *(void**)(&disk_write) = driver->func2;
             break;
     }
     driver->init();

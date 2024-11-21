@@ -15,7 +15,6 @@ $GCC $CFLAGS src/kmalloc/kmalloc.c -o kmalloc.o
 $GCC $CFLAGS src/stdlib/unistd.c -o unistd.o
 $GCC $CFLAGS src/terminal.c -o terminal.o
 $GCC $CFLAGS src/stdlib/string.c -o string.o
-$GCC $CFLAGS src/sys/commands.c -o commands.o
 $GCC $CFLAGS src/sys/drivers/disk_ata.c -o disk_ata.o
 $GCC $CFLAGS src/sys/drivers/cd_atapi.c -o atapi.o
 $GCC $CFLAGS src/fs/lxfs.c -o lxfs.o

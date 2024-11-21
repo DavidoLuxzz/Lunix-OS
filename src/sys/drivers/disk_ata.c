@@ -90,7 +90,7 @@ uint8_t _ata_disk_write(uint8_t drv, uint32_t sector, uint32_t num_sectors, void
 void ata_disk_read(uint32_t sector, uint32_t no_sect, void* buf){
     _ata_disk_read(__ata_current_drive, sector, no_sect, buf);
 }
-void ata_disk_write(uint32_t sector, uint32_t no_sect, void* buf){
+uint8_t ata_disk_write(uint32_t sector, uint32_t no_sect, void* buf){
     _ata_disk_write(__ata_current_drive, sector, no_sect, buf);
 }
 

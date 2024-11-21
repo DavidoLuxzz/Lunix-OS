@@ -86,7 +86,7 @@ int elf_load_file(LXFS_DIR* curdir, const char* fname, elf_prog_data* dest){
     char* bytes = kmalloc(he_size);
     if (!bytes) { logerr("no memory space left"); return 6; }
 
-    disk_read(0, lba, size, bytes);
+    disk_read(lba, size, bytes);
     
     return elf_load_raw(bytes, dest);
 }

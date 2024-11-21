@@ -92,7 +92,7 @@ SCDEF(bool, exec, const char* fname) {
     // ELF stuff
     char* bytes = kmalloc(size * 512);
     if (!bytes) { logerr("kmalloc error"); return 6; }
-    ata_disk_read(0, lba,size, bytes);
+    _ata_disk_read(0, lba,size, bytes);
     uint32_t s_num = elf_get_num_segments(bytes);
     elf_prog_data *pd = (elf_prog_data*) kmalloc(sizeof(elf_prog_data) + (s_num)*sizeof(elf_segment));
     if (elf_load_raw(bytes, pd)){
