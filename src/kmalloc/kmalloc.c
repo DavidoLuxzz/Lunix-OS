@@ -9,11 +9,11 @@ uint32_t _mem_start;
 uint32_t _mem_blk_sizes[MEM_MAX_NUM_BLOCKS];
 uint32_t _mem_bitmap[MEM_BITMAP_UINT32_COUNT];
 
-int init_kmalloc(uint32_t _start){
+int init_kmalloc(uint32_t start){
     memset((uint8_t*)_mem_bitmap, 0x00, MEM_BITMAP_BYTE_COUNT);
     memset((uint8_t*)_mem_blk_sizes, 0x00, MEM_MAX_NUM_BLOCKS*4);
 
-    _mem_start = _start;
+    _mem_start = start;
 
     return 0;
 }
@@ -63,6 +63,13 @@ void *kmalloc(uint32_t size){ // size in bytes ofc
     return NULL;
 }
 
+void *kcalloc(uint32_t size){
+    void* addr = kmalloc(size);
+    if (!addr) return NULL;
+    memset(addr, 0, size);
+    return addr;
+}
+
 int kfree(void* _ptr){
     // find which index it is
     uint32_t index=0;
@@ -87,8 +94,7 @@ int kfree(void* _ptr){
     return -1;
 }
 
-
-
-
-
+void _kmem_set_start(uint32_t start){
+    _mem_start = start;
+}
 

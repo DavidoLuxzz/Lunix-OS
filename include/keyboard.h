@@ -24,3 +24,6 @@ void kUnlockKey(unsigned char);
 bool kIsKeyLocked(unsigned char);
 bool kGetKey(unsigned char key);
 void k_setKeyboardMode(uint8_t);
+
+#include <sys/driver.h>
+const driver_t *k_keyboard_get_driver(void);

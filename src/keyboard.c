@@ -193,3 +193,41 @@ void k_setKeyboardMode(uint8_t mode){
     }
 }
 
+
+
+
+// DRIVER BASED FUNCTIONS
+int k_keyboard_function(int _fn, int arg){
+    switch(_fn){
+        case 0:
+            k_setKeyboardMode(arg&0xFF);
+            return 0;
+        case 1:
+            kLockKey(arg&0x7F);
+            return 0;
+        case 2:
+            kUnlockKey(arg&0x7F);
+            return 0;
+        case 3:
+            return kIsKeyLocked(arg&0x7F)&0xFF;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+bool k_keyboard_get_key(uint16_t keycode){
+    return kGetKey(keycode&0x7F);
+}
+
+const driver_t __KEYBOARD_DRIVER = {
+    "Default PS2 keyboard",
+    DT_KEYBOARD_PS2,
+    &initKeyboard,
+    &k_keyboard_function,
+    &k_keyboard_get_key
+};
+
+const driver_t *k_keyboard_get_driver(){
+    return &__KEYBOARD_DRIVER;
+}

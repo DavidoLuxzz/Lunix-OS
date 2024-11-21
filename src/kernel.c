@@ -36,8 +36,7 @@ LXFS_DIR currentDir; // the LBA of a dir
 
 extern void init_system_calls(void);
 
-void __dump_multiboot_info(struct multiboot_info* bootInfo);
-void __transfer_iso_from_drive(uint16_t, uint16_t);
+void _kernel_install_drivers(void);
 void __execute_full(const char*);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo){
@@ -48,18 +47,16 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("[ ^2OK^7 ] IDT initialized\n");
     initTimer();
     printf("[ ^2OK^7 ] Timer interrupt initialized\n");
-    initKeyboard();
-    printf("[ ^2OK^7 ] PS2 Keyboard initialized\n");
-    init_kmalloc(KERNEL_MEMORY_START);
-    printf("[ ^2OK^7 ] Memory allocation initialized\n");
     ide_initialize(0,0,0,0,0);
     printf("[ ^2OK^7 ] IDE/ATAPI driver initialized\n"); 
     init_system_calls();
     printf("[ ^2OK^7 ] System call table initialized\n");
     init_driver_array();
     printf("[ ^2OK^7 ] Global driver slots array initialized\n");
-    
-    driver_install(ata_get_driver());
+   
+    printf("           [ INSTALLING DRIVERS ]\n");
+    _kernel_install_drivers();
+    putchar(0xa);
 
     if (__cpu_check()){
         char _cpu_vend_raw[12];
@@ -196,14 +193,10 @@ void __execute_full(const char* command){
     }
 }
 
-void __dump_multiboot_info(struct multiboot_info* bi){
-    printf("flags 0b%b\n", bi->flags);
-    printf("mem_lower 0x%x\n", bi->mem_lower);
-    printf("mem_upper 0x%x\n", bi->mem_upper);
-    printf("boot_device 0x%x\n", bi->boot_device);
 
-    print((const char*)bi->cmdline);
-    printf("mods_count %u\n", bi->mods_count);
-    printf("mods_addr 0x%x\n", bi->mods_addr);
+
+// ## DRIVER INITIALIZATION ## //
+void _kernel_install_drivers(void){
+    driver_install(ata_get_driver());
+    driver_install(k_keyboard_get_driver());
 }
-

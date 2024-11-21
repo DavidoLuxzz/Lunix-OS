@@ -6,7 +6,8 @@
 #define MEM_BITMAP_BYTE_COUNT 524288
 
 int init_kmalloc(uint32_t);
-void kdump_arrays(int);
 
+void kmem_set_start(uint32_t);
 void *kmalloc(uint32_t);
+void *kcalloc(uint32_t);
 int kfree(void*);
