@@ -133,9 +133,9 @@ unsigned char ide_print_error(unsigned int drive, unsigned char err) {
     return err;
 }
 
-void ide_initialize(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned int BAR3,
-unsigned int BAR4) {
-
+void ide_initialize(void) {
+   uint8_t BAR0,BAR1,BAR2,BAR3,BAR4;
+   BAR0=BAR1=BAR2=BAR3=BAR4 = 0;
    int j, k, count = 0;
 
    // 1- Detect I/O Ports which interface IDE Controller:
@@ -284,6 +284,15 @@ void ide_irq(struct InterruptRegisters *regs) {
     ide_irq_invoked = 1;
 }
 
+uint8_t __ide_drive = 0;
+
+void ide_change_drive(unsigned char drive){
+    __ide_drive = drive;
+}
+
+unsigned char _ide_atapi_read(uint32_t lba, uint8_t sects, void* buf){
+    return ide_atapi_read(__ide_drive, lba, sects, 0, buf);
+}
 
 unsigned char ide_atapi_read(unsigned char drive, unsigned int lba, unsigned char numsects,
           unsigned short selector, void* _buf) {
@@ -375,3 +384,33 @@ void ide_install_handler(){
     irq_install_handler (14, ide_irq); // Primary ATA Hard Disk
     irq_install_handler (15, ide_irq); // Secondary ATA Hard Disk
 }
+
+
+
+// ### DRIVER DEFINITION ###
+void __ide_nodef(void){};
+
+const driver_t __OSDEV_IDE_DRIVER_ide = {
+    "Default IDE driver 1/2",
+    DT_ATA_IDE,
+    &ide_initialize,
+    &ide_change_drive,
+    NULL
+};
+
+
+const driver_t __OSDEV_IDE_DRIVER_ide_atapi = {
+    "Default IDE driver 2/2",
+    DT_CDDVD,
+    &__ide_nodef,
+    &ide_change_drive,
+    &_ide_atapi_read
+};
+
+const driver_t *ide_get_driver0(void){
+    return &__OSDEV_IDE_DRIVER_ide;
+}
+const driver_t *ide_get_driver1(void){
+    return &__OSDEV_IDE_DRIVER_ide_atapi;
+}
+

@@ -13,7 +13,6 @@ int     (*sdisk_write)(uint32_t lba, uint32_t num_sectors, void* dest_buf);
 // CDDVD
 void    (*cdrom_change_drive)(uint8_t target_drive);                                          
 int     (*cdrom_read)(uint32_t lba, uint32_t num_sectors, void* dest_buf);                    
-int     (*cdrom_write)(uint32_t lba, uint32_t num_sectors, void* dest_buf);                   
 // Floppy
 void    (*flp_change_drive)(uint8_t target_drive);                                            
 int     (*flp_read)(uint32_t lba, uint32_t num_sectors, void* dest_buf);                      

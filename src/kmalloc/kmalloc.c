@@ -94,7 +94,7 @@ int kfree(void* _ptr){
     return -1;
 }
 
-void _kmem_set_start(uint32_t start){
+void kmem_set_start(uint32_t start){
     _mem_start = start;
 }
 

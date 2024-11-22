@@ -1,4 +1,5 @@
 #pragma once
+#include <sys/driver.h>
 
 // Status
 #define ATA_SR_BSY     0x80    // Busy
@@ -122,8 +123,14 @@ void ide_wait_irq();
 void ide_irq();
 void ide_install_handler();
 // IDE init
-void ide_initialize(unsigned int BAR0, unsigned int BAR1, unsigned int BAR2, unsigned int BAR3, unsigned int BAR4);
+void ide_initialize(void);
+void ide_change_drive(uint8_t);
 
 // ATAPI
+unsigned char _ide_atapi_read(uint32_t lba, uint8_t sects, void* buf);
 unsigned char ide_atapi_read(unsigned char drive, unsigned int lba, unsigned char numsects, unsigned short selector, void* buf);
+
+// ### DRIVER DEF ###
+const driver_t *ide_get_driver0(void);
+const driver_t *ide_get_driver1(void);
 

@@ -25,8 +25,8 @@
 #include <sys/driver.h>
 #include <sys/libkern.h>
 
-#define KERNEL_BOOT_START   0x00100000  // grub loaded kernel destination
-#define KERNEL_MEMORY_START 0x00500000  // = ~1 GB for kernel and bios   (1,25gb)
+#define KERNEL_BOOT_START   0x01000000  // grub loaded kernel destination
+#define KERNEL_MEMORY_START 0x01200000  // = ~1 GB for kernel and bios   (1,25gb)
                                         // rest is for apps (from $KERNEL_MEMORY_START)
 extern uint32_t _kernel_end;
 
@@ -47,8 +47,6 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("[ ^2OK^7 ] IDT initialized\n");
     initTimer();
     printf("[ ^2OK^7 ] Timer interrupt initialized\n");
-    ide_initialize(0,0,0,0,0);
-    printf("[ ^2OK^7 ] IDE/ATAPI driver initialized\n"); 
     init_system_calls();
     printf("[ ^2OK^7 ] System call table initialized\n");
     init_driver_array();
@@ -57,6 +55,8 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("           [ INSTALLING DRIVERS ]\n");
     _kernel_install_drivers();
     putchar(0xa);
+
+    kmem_set_start(KERNEL_MEMORY_START);
 
     if (__cpu_check()){
         char _cpu_vend_raw[12];
@@ -199,4 +199,6 @@ void __execute_full(const char* command){
 void _kernel_install_drivers(void){
     driver_install(ata_get_driver());
     driver_install(k_keyboard_get_driver());
+    driver_install(ide_get_driver0());
+    driver_install(ide_get_driver1());
 }
