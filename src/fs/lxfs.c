@@ -400,6 +400,7 @@ LXFS_ENTRY* lxfs_open_file(LXFS_DIR* cd, const char* fname){
         if (++valids >= dirsize) break;
     }
 __lxfs_open_file___error_label:
+    logerr("LXFS: open file error");
     kfree(reten);
     return NULL;
 }

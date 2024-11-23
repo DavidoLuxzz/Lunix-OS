@@ -34,7 +34,7 @@ SCDEC(1,    bool,   exec,    const char*)
  * So it does that and only then it does its job
  */
 SCDEC(2,    void,   write,      const char*, size_t)
-
+SCDEC(3,    bool,   execa,      const char*, uint32_t)
 
 
 

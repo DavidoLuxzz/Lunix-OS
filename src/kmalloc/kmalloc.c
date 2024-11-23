@@ -90,7 +90,7 @@ int kfree(void* _ptr){
 
         iptr += _mem_blk_sizes[index];
     }
-    print("kfree: error: cannot find block index of given pointer \n");
+    printf("kfree: error: cannot find block index of given pointer %p\n", _ptr);
     return -1;
 }
 

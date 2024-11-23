@@ -57,7 +57,7 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     putchar(0xa);
 
     kmem_set_start(KERNEL_MEMORY_START);
-
+    
     if (__cpu_check()){
         char _cpu_vend_raw[12];
         cpuid_string(0, (uint32_t*)_cpu_vend_raw);
@@ -154,11 +154,19 @@ void __execute_full(const char* command){
         if (argc < 1) {
             printf("new: no file name given\n"); return;
         }
-        int err = lxfs_create_new_file(&currentDir, command+tokens[0], 0777, 0, 512);
+        printf("Enter static file size in bytes: ");
+        char tmp[12];
+        memset(tmp, 0, 10);
+        nread(tmp, 10);
+        uint32_t bytes = stoi(tmp);
+        int err = lxfs_create_new_file(&currentDir, command+tokens[0], 0777, 0, bytes);
         if (err) printf("error: %u\n", err);
    }else if (strcmd(command, "rm")) cmd_rm(command, argc, tokens);
-    else if (strcmd(command, "led")) cmd_led(command, argc, tokens);
-    else if (strcmd(command, "run")) cmd_run(command, argc, tokens);
+    else if (strcmd(command, "led")) {
+        printf("Editor currently not in use. Will be when fixed...\n"); return;
+        cmd_led(command, argc, tokens);
+   }else if (strcmd(command, "run")) cmd_run(command, argc, tokens);
+    else if (strcmd(command, "runa")) cmd_runa(command, argc, tokens);
     else if (strcmd(command, "shut")) cmd_shut(command, argc, tokens);
     else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
@@ -187,7 +195,7 @@ void __execute_full(const char* command){
         disk_write(9696,sects, buf);
 
         kfree(buf);
-    } else {
+    }else {
         print("unknown command: "); write(command, strdlen(command, ' '));
         newLine();
     }
