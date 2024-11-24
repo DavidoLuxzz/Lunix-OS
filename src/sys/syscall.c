@@ -105,6 +105,7 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
         elf_segment seg = pd->s_data[i];
         // printf("Loaded segment from foff=%p to off=%p with memsz=0x%x\n",seg.s_foffset, seg.s_offset, seg.s_memsz);
         memcpy(program_memory+seg.s_offset, bytes+seg.s_foffset, seg.s_memsz);
+        // for (int j=0; j<16; j++) printf("%x ", bytes[seg.s_foffset + j]&0xFF);
     }
     kfree(bytes);
     kfree(pd);
@@ -122,9 +123,11 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
     // then load a program into memory
     // it doesn't affect the workflow if you load the program before creating a process
     void (*_where)() = (void*) (program_memory+pd->entry);
+    printf("PROC START AT ADDR=%p\n", _where);
+    for (int i=0; i<16; i++) printf("%x ", program_memory[i]&0xFF);
     _where();
+    printf("PROC FINISH\n");
     return 0;
-
 }
 
 SCDEF(bool, exec, const char* fname) {

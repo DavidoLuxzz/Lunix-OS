@@ -21,7 +21,7 @@ $GCC $CFLAGS src/fs/lxfs.c -o lxfs.o
 $GCC $CFLAGS src/sys/drivers/disk_ide.c -o disk_ide.o
 $GCC $CFLAGS src/inst.c -o os_install.o
 $GCC $CFLAGS src/disk/partition.c -o partio.o
-$GCC $CFLAGS src/sys/syscall.c -o syscall.o
+$GCC $CFLAGS src/sys/syscall.c -o syscall.o -masm=intel
 $GCC $CFLAGS src/sys/elf.c -o elf.o
 $GCC $CFLAGS src/sys/_process.c -o _proc.o
 $GCC $CFLAGS src/sys/driver.c -o _driver.o
@@ -51,6 +51,8 @@ echo "\nLinking...\n"
 #i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o elf.o _proc.o 
 i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel *.o
 
+# remove some object files so they don't be included in static library
+rm boot.o kernel.o gdts.o idts.o 
 # create static library
 i686-elf-ar rcs lib/libkern.a *.o
 

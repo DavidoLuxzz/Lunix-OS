@@ -1,10 +1,9 @@
-int nigga = 12;
+#include <stdio.h>
+#include <vga.h>
 
 int main(){
-    *(char*)0xb8124 = '*';
-    nigga += 2;
-    nigga = nigga - 8;
-    nigga = 9;
-    nigga ^= nigga;
-    return nigga;
+    *(char*)0xb8224 = '*';
+    move_cursor(0, 20);
+    printf("a nigga");
+    return 0;
 }

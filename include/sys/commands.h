@@ -22,5 +22,5 @@ __CMD_FUNC(cmd_led);
 __CMD_FUNC(cmd_run);
 __CMD_FUNC(cmd_shut);
 __CMD_FUNC(cmd_runa);
-
+__CMD_FUNC(cmd_fsz);
 

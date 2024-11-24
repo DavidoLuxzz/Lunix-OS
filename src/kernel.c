@@ -163,11 +163,15 @@ void __execute_full(const char* command){
         if (err) printf("error: %u\n", err);
    }else if (strcmd(command, "rm")) cmd_rm(command, argc, tokens);
     else if (strcmd(command, "led")) {
-        printf("Editor currently not in use. Will be when fixed...\n"); return;
+        printf("Editor currently not in use. Will be when fixed...\ny/N ");
+        char tmp[2];
+        nread(tmp,1);
+        if (*tmp != 'y') return;
         cmd_led(command, argc, tokens);
    }else if (strcmd(command, "run")) cmd_run(command, argc, tokens);
     else if (strcmd(command, "runa")) cmd_runa(command, argc, tokens);
     else if (strcmd(command, "shut")) cmd_shut(command, argc, tokens);
+    else if (strcmd(command, "fsz")) cmd_fsz(command, argc, tokens);
     else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
         else {
@@ -185,14 +189,12 @@ void __execute_full(const char* command){
         printf("How many sectors will be copied: ");
         nread(tmp, 10);
         uint32_t sects = stoi(tmp);
-        char* buf = (char*)kmalloc(2048);
-        disk_change_drive(sdrv);
-        disk_read(0x0,sects, buf);
+        char* buf = (char*)kmalloc(sects*512);
+        _ata_disk_read(sdrv, 0x0,sects, buf);
         
         write(buf, 4);
 
-        disk_change_drive(0);
-        disk_write(9696,sects, buf);
+        _ata_disk_write(0, 9696,sects, buf);
 
         kfree(buf);
     }else {
