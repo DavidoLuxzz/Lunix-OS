@@ -10,6 +10,8 @@
 
 DISK_PARTITION _dskpart;
 
+LXFS_DIR __lxfs_root_dir;
+
 uint8_t* __lxfs_fs_bitmap; // 1 bit = 4 sectora
 uint32_t __lxfs_fs_4s;
 
@@ -64,6 +66,7 @@ void lxfs_load_filesystem(){
     free_space -= (__lxfs_fs_4s*4);
     __lxfs_data_blocks = free_space/LXFS_BLOCK_SIZE; // blocks
     __lxfs_data_bitmap = (uint8_t*) kmalloc(__lxfs_data_blocks/8);
+    lxfs_get_dir(0, &__lxfs_root_dir);
 }
 
 void lxfs_list_bitmap(){
@@ -260,16 +263,8 @@ int lxfs_remove_dir(LXFS_DIR *currentDir, const char* dirname){
     return LXFS_ERR_NOT_FOUND;
 }
 
-int _lxfs_remove_file(LXFS_DIR *cd, int index){
-    LXFS_ENTRY e;
-    lxfs_get_entry(cd->entry.lba, index, &e);
-    uint8_t type = (e.type_and_perms>>12) & 0x0F;
-    if ((e.type_and_perms>>12 & 0x0F)!=LXFS_FILE) return LXFS_ERR_TYPE;
-    _lxfs_free_data_space(e.lba/LXFS_BLOCK_SIZE);
-    _lxfs_invl_entry(cd, index);
-    cd->entry.size--;
-    lxfs_set_dir(cd->entry.lba, cd);
-    return LXFS_SUCCESS;
+int _lxfs_remove_file(LXFS_DIR* cd, int index){
+    return LXFS_ERR_NOT_FOUND;
 }
 
 int lxfs_remove_file(LXFS_DIR *cd, const char* filename){
@@ -283,7 +278,14 @@ int lxfs_remove_file(LXFS_DIR *cd, const char* filename){
         if (!(e.flags & LXFS_VALID)) continue;
 
         if (strcmd(e.name, filename)){
-            return _lxfs_remove_file(cd, i);
+            uint8_t type = (e.type_and_perms>>12) & 0x0F;
+            printf("rm: type: %u %s %u\n", type&0xFF, e.name, i);
+            if (type!=LXFS_FILE) return LXFS_ERR_TYPE;
+            _lxfs_free_data_space(e.lba/LXFS_BLOCK_SIZE);
+            _lxfs_invl_entry(cd, i);
+            cd->entry.size--;
+            lxfs_set_dir(cd->entry.lba, cd);
+            return LXFS_SUCCESS;
         }
         if (++valids >= dirsize) break;
     }
@@ -381,6 +383,11 @@ uint32_t lxfs_get_data_lba(uint32_t rel_lba){
 
 
 LXFS_ENTRY* lxfs_open_file(LXFS_DIR* cd, const char* fname){
+    // check if [cd] valid
+    if (!(cd->entry.flags & LXFS_VALID)) {
+        logerr("LXFS: directory not valid");
+        return NULL;
+    }
     LXFS_ENTRY* reten = kmalloc(sizeof(LXFS_ENTRY));
     uint32_t valids=0;
     LXFS_ENTRY es[LXFS_MAX_NODES+2];
@@ -409,7 +416,9 @@ void lxfs_close_file(LXFS_ENTRY* allocated_file_entry){
     kfree(allocated_file_entry);
 }
 
-
+LXFS_DIR *lxfs_get_root_dir(){
+    return &__lxfs_root_dir;
+}
 
 
 

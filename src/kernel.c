@@ -24,6 +24,7 @@
 #include <sys/elf.h>
 #include <sys/driver.h>
 #include <sys/libkern.h>
+#include <user/users.h>
 
 #define KERNEL_BOOT_START   0x01000000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x01200000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -51,7 +52,6 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     printf("[ ^2OK^7 ] System call table initialized\n");
     init_driver_array();
     printf("[ ^2OK^7 ] Global driver slots array initialized\n");
-   
     printf("           [ INSTALLING DRIVERS ]\n");
     _kernel_install_drivers();
     putchar(0xa);
@@ -86,6 +86,9 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     lxfs_get_dir(0,&currentDir);
     lxfs_load_filesystem();
     
+    init_users_file();
+    printf("[ ^2OK^7 ] /.users file initialized\n");
+ 
     k_setKeyboardMode(K_MODE_TERMINAL);
   
     // --- RESET SCREEN --- //

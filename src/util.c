@@ -86,5 +86,5 @@ void logwarn(const char* msg){
     printf("^ewarn:^_ %s\n", msg);
 }
 void log(const char* msg){
-    printf("[ ^fINFO^_ ] %s\n");
+    printf("[ ^fINFO^_ ] %s\n", msg);
 }

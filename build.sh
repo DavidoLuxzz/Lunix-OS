@@ -26,6 +26,7 @@ $GCC $CFLAGS src/sys/elf.c -o elf.o
 $GCC $CFLAGS src/sys/_process.c -o _proc.o
 $GCC $CFLAGS src/sys/driver.c -o _driver.o
 $GCC $CFLAGS src/sys/libkern.c -o __libkern.o
+$GCC $CFLAGS src/user/users.c -o __users.o
 
 # compile system commands
 echo "compiling system commands"

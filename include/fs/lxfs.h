@@ -200,7 +200,10 @@ LXFS_ENTRY* lxfs_open_file(LXFS_DIR* cd, const char* fname);
  */
 void lxfs_close_file(LXFS_ENTRY* allocated_file_entry);
 
-
+/**
+ * Returns preloaded root directory
+ */
+LXFS_DIR *lxfs_get_root_dir(void);
 
 
 
