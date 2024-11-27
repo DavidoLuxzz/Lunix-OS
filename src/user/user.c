@@ -3,13 +3,18 @@
 #include <util.h>
 #include <stdio.h>
 #include <sys/libkern.h> // for disk functions
+#include <string.h>
+#include <math.h>
+#include <unistd.h>
 
 // Local variables //
 
 user_t __all_users[MAX_USERS];
 
-const user_t __root = {0, 0, 0};
-const user_t __usr_null = {-1, -1, -1};
+const user_t __root = {0, 0, 0, "root"};
+const user_t __usr_null = {-1, -1, -1, USER_NAME_NULL};
+
+user_t __login = __usr_null; // current user (initialize to null)
 
 uint32_t    __users_file_lba;
 
@@ -56,6 +61,31 @@ int usr_remove(int index){
     return 0;
 }
 
+void _usr_login(int index, user_t *user){
+    *user = __all_users[index];
+}
+
+int usr_login(const char* name){
+    for (int uid=0; uid<MAX_USERS; uid++){
+        user_t u = __all_users[uid];
+        if (u.uid<0 || u.uid != uid) continue;
+        //if (strnequ(name, u.name, umin(strlen(u.name),16))){
+        if (strcmd(name, u.name)){
+            __login = u;
+            return uid;
+        }
+    }
+    return -1;
+}
+
+void usr_get_current(user_t *u){
+    *u = __login;
+}
+
+void usr_print_name(){
+    write(__login.name, umin(strlen(__login.name), 16));
+}
+
 // usr_xxxx() functions only affect the memory (aren't saved in .users file)
 // so there should be a function for saving users data
 int save_users_file(){
@@ -63,6 +93,7 @@ int save_users_file(){
     memcpy(bytes, __all_users, sizeof(__all_users));
     disk_write(__users_file_lba, 1, bytes);
 }
+
 
 
 int init_users_file(){

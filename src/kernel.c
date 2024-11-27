@@ -37,6 +37,8 @@ LXFS_DIR currentDir; // the LBA of a dir
 
 extern void init_system_calls(void);
 
+const char* computer_name = "lunixos"; // will be changed in the future
+
 void _kernel_install_drivers(void);
 void __execute_full(const char*);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
@@ -90,7 +92,12 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     
     init_users();
     printf("[ ^2OK^7 ] /.users file initialized\n");
- 
+    // login root
+    usr_login("root");
+    user_t ___tmp_user;
+    usr_get_current(&___tmp_user);
+    printf("[ ^2OK^7 ] Logged in as ^c%s^_ (%u)\n", ___tmp_user.name, ___tmp_user.uid);
+
     k_setKeyboardMode(K_MODE_TERMINAL);
   
     // --- RESET SCREEN --- //
@@ -100,8 +107,15 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     char command[TERMINAL_MAX_BUFFER_LENGTH];
     __global_exit = 0;
     while (!__global_exit){
-        if (kGetKey(K_ESC)) break;
-        printf("^croot^7@lunixos ^f%s^7 > ", lxfs_get_dir_name(&currentDir));
+        // print user name
+        printf("^c");
+        usr_print_name();
+        // print computer name
+        printf("^7@%s ", computer_name);
+        // print current working directory
+        printf("^f%s^7", lxfs_get_dir_name(&currentDir));
+        // print the '>'
+        printf(" > ");
         // todo
         read(command);
         __execute_full(command);

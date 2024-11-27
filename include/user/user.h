@@ -11,16 +11,21 @@
  */
 typedef struct user_t {
     /* User ID */
-    int     uid;
+    int         uid;
     /* User privlege level (defined below) */
-    uint8_t plevel;
+    uint8_t     plevel;
     /* User type (defined below) */
-    uint8_t type;
+    uint8_t     type;
+    /* User name (limited to 16 characters) */
+    char        name[16];
+    /* User data lba */
+    uint32_t    data_lba;
 } user_t;
 
 // #Definitions //
 /* misc */
 #define MAX_USERS   256         // Max users to exist on a operating system
+#define USER_NAME_NULL  "\xffnull\xff"
 /* privlege levels */
 enum user_plevel {
     USR_PL_0,   // highest privlege level (everything to even system deletion)
@@ -58,6 +63,22 @@ int usr_remove(int index);
  * Set user at specific index (memory)
  */
 int usr_set(int index, user_t user);
+
+/**
+ * User login.
+ * Returns user ID
+ */
+int usr_login(const char* name);
+
+/**
+ * Returns a copy of user_t struct of current user
+ */
+void usr_get_current(user_t*);
+
+/**
+ * Prints current user name
+ */
+void usr_print_name(void);
 
 /**
  * Save users array to memory (disk)
