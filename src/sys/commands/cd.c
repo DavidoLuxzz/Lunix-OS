@@ -10,14 +10,14 @@ __CMD_FUNC(cmd_cd) {
     if (strcmd(command+tokens[0], ".")) return 0;
     if (strcmd(command+tokens[0], "..")) {
         LXFS_DIR target_dir;
-        lxfs_get_dir(currentDir.parent_lba, &target_dir);
-        memcpy(&currentDir, &target_dir, 128);
+        lxfs_get_dir(lxfs_get_current_dir()->parent_lba, &target_dir);
+        memcpy(lxfs_get_current_dir(), &target_dir, 128);
         return 0;
     }
     uint32_t valids=0;
     LXFS_ENTRY es[LXFS_MAX_NODES+2];
     // first two entries are skipped (LXFS_DIR)
-    lxfs_get_all_entries(currentDir.entry.lba, es);
+    lxfs_get_all_entries(lxfs_get_current_dir()->entry.lba, es);
     uint32_t dirsize = es[0].size; // + 2 for . and ..
     if (!dirsize) return 0;
     for (uint32_t i=2; i<LXFS_MAX_NODES; i++){
@@ -32,7 +32,7 @@ __CMD_FUNC(cmd_cd) {
             }
             LXFS_DIR target_dir;
             lxfs_get_dir(e.lba, &target_dir);
-            memcpy(&currentDir, &target_dir, 128);
+            memcpy(lxfs_get_current_dir(), &target_dir, 128);
             return 0;
         }
 

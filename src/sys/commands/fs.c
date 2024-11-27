@@ -7,6 +7,7 @@
 #include <util.h>
 
 __CMD_FUNC (cmd_fs) {
+    LXFS_DIR *cdptr = lxfs_get_current_dir();
     // LxFS file system command
     if (argc < 1) return 0;
     if (strcmd(command+tokens[0], "root")){ // broken, no support
@@ -47,18 +48,18 @@ __CMD_FUNC (cmd_fs) {
         lxfs_list_bitmap();
     } else if (strcmd(command+tokens[0], "clear")){
         LXFS_ENTRY es[LXFS_MAX_NODES+2];
-        lxfs_get_all_entries(currentDir.entry.lba, es);
+        lxfs_get_all_entries(cdptr->entry.lba, es);
         for (uint32_t i=2; i<LXFS_MAX_NODES; i++){
             if (es[i].flags & LXFS_VALID){
                 LXFS_ENTRY e = es[i];
                 switch ((e.type_and_perms>>12) & 0x0F){
                     case LXFS_FOLDER:
                         // remove whole dir
-                        _lxfs_remove_dir(&currentDir, i);
+                        _lxfs_remove_dir(cdptr, i);
                         break;
                     case LXFS_FILE:
                         // remove file entry
-                        _lxfs_invl_entry(&currentDir, i);
+                        _lxfs_invl_entry(cdptr, i);
                         break;
                     default:
                         printf("Unknown node type\n");
@@ -66,10 +67,10 @@ __CMD_FUNC (cmd_fs) {
                 }
             }
         }
-        currentDir.entry.size = 0;
-        lxfs_set_dir(currentDir.entry.lba, &currentDir);
+        lxfs_get_current_dir()->entry.size = 0;
+        lxfs_set_dir(cdptr->entry.lba, cdptr);
     } else if (strcmd(command+tokens[0], "size")){
-        printf("current dir size: 0x%x\n", currentDir.entry.size);
+        printf("current dir size: 0x%x\n", cdptr->entry.size);
     }
     return 0;
 }

@@ -205,5 +205,11 @@ void lxfs_close_file(LXFS_ENTRY* allocated_file_entry);
  */
 LXFS_DIR *lxfs_get_root_dir(void);
 
+/**
+ * Returns current working directory
+ */
+LXFS_DIR *lxfs_get_current_dir(void);
+
+
 
 

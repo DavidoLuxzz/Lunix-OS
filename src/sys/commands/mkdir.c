@@ -7,7 +7,7 @@ __CMD_FUNC(cmd_mkdir) {
         printf("No directory name given\n");
         return 0;
     }
-    int err = lxfs_create_new_dir(&currentDir, command+tokens[0], 0333, 0);
+    int err = lxfs_create_new_dir(lxfs_get_current_dir(), command+tokens[0], 0333, 0);
     if (err) printf("error creating directory %u\n", err);
     return err;  
 }

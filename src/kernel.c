@@ -24,7 +24,7 @@
 #include <sys/elf.h>
 #include <sys/driver.h>
 #include <sys/libkern.h>
-#include <user/users.h>
+#include <user/user.h>
 
 #define KERNEL_BOOT_START   0x01000000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x01200000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -86,7 +86,9 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     lxfs_get_dir(0,&currentDir);
     lxfs_load_filesystem();
     
-    init_users_file();
+    // AFTER FILE SYSTEM LOADING //
+    
+    init_users();
     printf("[ ^2OK^7 ] /.users file initialized\n");
  
     k_setKeyboardMode(K_MODE_TERMINAL);

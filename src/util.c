@@ -80,10 +80,10 @@ void outsw(uint16_t __port, const void *__buf, unsigned long __n) {
 
 #include <stdio.h>
 void logerr(const char* msg){
-    printf("^4error:^_ %s\n", msg);
+    printf("[ ^4ERRN^_ ] %s\n", msg);
 }
 void logwarn(const char* msg){
-    printf("^ewarn:^_ %s\n", msg);
+    printf("[ ^eWARN^_ ] %s\n", msg);
 }
 void log(const char* msg){
     printf("[ ^fINFO^_ ] %s\n", msg);

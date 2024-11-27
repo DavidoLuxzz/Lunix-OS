@@ -13,7 +13,7 @@ __CMD_FUNC(cmd_led){
     if (argc < 1){
         printf("led: no arguments\n"); return 0;
     }
-    LXFS_ENTRY* e = lxfs_open_file(&currentDir, command+tokens[0]);
+    LXFS_ENTRY* e = lxfs_open_file(lxfs_get_current_dir(), command+tokens[0]);
     if (!e) {
         printf("Failed to open file: %s\n", command+tokens[0]); return 0;
     }

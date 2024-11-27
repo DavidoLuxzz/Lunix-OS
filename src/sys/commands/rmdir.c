@@ -5,7 +5,7 @@
 __CMD_FUNC(cmd_rmdir) {
     // remove directory
     if (argc < 1) return 0;
-    int err = lxfs_remove_dir(&currentDir, command+tokens[0]);
+    int err = lxfs_remove_dir(lxfs_get_current_dir(), command+tokens[0]);
     if (!err) return 0;
     switch(err){
         case LXFS_ERR_NOT_FOUND:

@@ -7,7 +7,7 @@ __CMD_FUNC(cmd_ls) {
     uint32_t valids=0;
     LXFS_ENTRY es[LXFS_MAX_NODES+2];
     // first two entries are combined a LXFS_DIR struct, so they are skipped
-    lxfs_get_all_entries(currentDir.entry.lba, es);
+    lxfs_get_all_entries(lxfs_get_current_dir()->entry.lba, es);
     uint32_t dirsize = es[0].size; // + 2 for . and ..
     if (!dirsize) return 0;
     for (uint32_t i=2; i<LXFS_MAX_NODES; i++){

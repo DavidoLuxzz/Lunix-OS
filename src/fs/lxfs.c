@@ -11,6 +11,7 @@
 DISK_PARTITION _dskpart;
 
 LXFS_DIR __lxfs_root_dir;
+LXFS_DIR __lxfs_current_dir;
 
 uint8_t* __lxfs_fs_bitmap; // 1 bit = 4 sectora
 uint32_t __lxfs_fs_4s;
@@ -67,6 +68,7 @@ void lxfs_load_filesystem(){
     __lxfs_data_blocks = free_space/LXFS_BLOCK_SIZE; // blocks
     __lxfs_data_bitmap = (uint8_t*) kmalloc(__lxfs_data_blocks/8);
     lxfs_get_dir(0, &__lxfs_root_dir);
+    __lxfs_current_dir = __lxfs_root_dir;
 }
 
 void lxfs_list_bitmap(){
@@ -420,7 +422,9 @@ LXFS_DIR *lxfs_get_root_dir(){
     return &__lxfs_root_dir;
 }
 
-
+LXFS_DIR *lxfs_get_current_dir(){
+    return &__lxfs_current_dir;
+}
 
 
 

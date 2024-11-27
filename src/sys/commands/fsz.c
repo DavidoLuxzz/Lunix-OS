@@ -6,7 +6,7 @@ __CMD_FUNC(cmd_fsz){
     if (argc < 1){
         logerr("no file name given"); return 0;
     }
-    LXFS_ENTRY* e = lxfs_open_file(&currentDir, command+tokens[0]);
+    LXFS_ENTRY* e = lxfs_open_file(lxfs_get_current_dir(), command+tokens[0]);
     printf("File: %s\n", e->name);
     printf("Type: %u\n", (e->type_and_perms>>12)&0xF);
     printf("LBA: %u\n", e->lba);
