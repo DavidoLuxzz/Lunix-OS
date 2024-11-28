@@ -2,7 +2,7 @@
 #include <stdint.h>
 
 void memset(void *dest, char val, uint32_t count);
-void memcpy(void *dest, void* src, uint32_t countb);
+void memcpy(void *dest, const void* src, uint32_t countb);
 
 uint8_t getbit(uint32_t, uint32_t);
 void outb(uint16_t Port, uint8_t Value);

@@ -39,11 +39,13 @@ extern void init_system_calls(void);
 
 const char* computer_name = "lunixos"; // will be changed in the future
 
+uint32_t loaded_times = 0;
+
 void _kernel_install_drivers(void);
 void __execute_full(const char*);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo){
-    printf("Loading ^9LUNIX OS^7...\nWelcome\n");
+    printf("Loading ^9LUNIX OS^7... (%u)\nWelcome\n", loaded_times++);
     initGdt(KERNEL_MEMORY_START);
     printf("[ ^2OK^7 ] GDT initialized\n");
     initIdt();
@@ -191,6 +193,8 @@ void __execute_full(const char* command){
     else if (strcmd(command, "runa")) cmd_runa(command, argc, tokens);
     else if (strcmd(command, "shut")) cmd_shut(command, argc, tokens);
     else if (strcmd(command, "fsz")) cmd_fsz(command, argc, tokens);
+    else if (strcmd(command, "user")) cmd_user(command, argc, tokens);
+    else if (strcmd(command, "login")) cmd_login(command, argc, tokens);
     else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
         else {

@@ -21,9 +21,11 @@ uint32_t    __users_file_lba;
 // Functions //
 
 int init_users(){
+    printf("sizeof(__all_users) = %z\n", sizeof(__all_users));
     if (init_users_file()){
         memset(__all_users, 0xFF, sizeof(__all_users)); // set all users to {-1,-1,-1} (null)
         __all_users[0] = __root;
+        save_users_file();
     } else {
         char bytes[512];
         disk_read(__users_file_lba, 1, bytes);
@@ -33,21 +35,34 @@ int init_users(){
     return 0;
 }
 
+bool __user_print_log = false;
+
 // note if you change this function be aware that it is used in usr_add()
-int usr_set(int index, user_t user){
+int usr_set(int index, user_t *user){
     // check if index valid (includes root check because index <= 0)
     if (index<=0 || index>=MAX_USERS){
-        logerr("USERS: user index invalid"); return 6; }
+        if (__user_print_log) logerr("USERS: user index invalid"); return 6; }
     // check if user at index exists
-    if (__all_users[index].uid >= 0) {
-        logerr("USERS: user already exists"); return 6; }
-    __all_users[index] = user;
+    if (__all_users[index].uid == index) {
+        if (__user_print_log) logerr("USERS: user at index already exists"); return 6; }
+    // lastly check if there is an user with the same name
+    for (int i=0; i<MAX_USERS; i++){
+        if (strcmd(__all_users[i].name, user->name)) {
+            if (__user_print_log) logerr("USERS: user with the same name exists"); return 4;
+        }
+    }
+    __all_users[index] = *user;
+    __all_users[index].uid = index;
     return 0;
 }
 
-int usr_add(user_t user){
+int usr_add(const char* name, uint8_t type, uint8_t plvl){
+    user_t user = {-1,plvl,type};
+    memcpy(user.name, name, 16);
     for (int i=1; i<MAX_USERS; ++i){
-        if (!usr_set(i, user)) return 0;
+        int code = usr_set(i, &user);
+        if (!code) return 0;
+        if (code==4) return 2;
     }
     return 1;
 }
@@ -85,6 +100,18 @@ void usr_get_current(user_t *u){
 void usr_print_name(){
     write(__login.name, umin(strlen(__login.name), 16));
 }
+void _usr_pnm(const char* name){ // user print name macro
+    write(__login.name, umin(strlen(__login.name), 16));
+}
+
+void usr_print_all(){
+    for (int i=0; i<MAX_USERS; i++){
+        user_t user = __all_users[i];
+        if (user.uid != i) continue;
+        printf("[%u]\t", user.uid); usr_pnm(user.name);
+        putc(0xa);
+    }
+}
 
 // usr_xxxx() functions only affect the memory (aren't saved in .users file)
 // so there should be a function for saving users data
@@ -100,7 +127,7 @@ int init_users_file(){
     LXFS_ENTRY* en = lxfs_open_file(lxfs_get_root_dir(), ".users");
     if(!en){ // doesn't exist
         log("USERS: user file doesn't exists");
-        if (lxfs_create_new_file(lxfs_get_root_dir(), ".users", 0000, LXFS_HIDDEN, 512)){
+        if (lxfs_create_new_file(lxfs_get_root_dir(), ".users", 0000, LXFS_HIDDEN, sizeof(__all_users))){
             logerr("USERS: error creating users file");
             return 9;
         }

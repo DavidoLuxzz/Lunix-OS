@@ -8,7 +8,7 @@ void memset(void *dest, char val, uint32_t count){
 
 }
 
-void memcpy(void *dest, void* src, uint32_t countb){
+void memcpy(void *dest, const void* src, uint32_t countb){
     char *dtmp = (char*) dest;
     char *stmp = (char*) src;
     for (; countb != 0; countb --){
