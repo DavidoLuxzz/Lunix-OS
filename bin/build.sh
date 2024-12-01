@@ -9,6 +9,6 @@ nasm -f elf32 ../src/bin/test.s -o bin_test.o
 $GCC $CFLAGS -c ../src/bin/program.c -o bin_program.o
 
 # linking process: use or not use libkern library
-i686-elf-ld -m elf_i386 -L../lib -lkern -Ttext 0x0 -e main -o program bin_program.o ../lib/libkern.a
+i686-elf-ld -m elf_i386 -Ttext 0x0 -e main -o program bin_program.o ../lib/libkern.a
 
 cat program _zeroes > CD_ROM

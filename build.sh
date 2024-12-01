@@ -15,10 +15,10 @@ $GCC $CFLAGS src/kmalloc/kmalloc.c -o kmalloc.o
 $GCC $CFLAGS src/stdlib/unistd.c -o unistd.o
 $GCC $CFLAGS src/terminal.c -o terminal.o
 $GCC $CFLAGS src/stdlib/string.c -o string.o
-$GCC $CFLAGS src/sys/drivers/disk_ata.c -o disk_ata.o
-$GCC $CFLAGS src/sys/drivers/cd_atapi.c -o atapi.o
+$GCC $CFLAGS src/sys/drivers/disk_ata.c -o _drv_disk_ata.o
+$GCC $CFLAGS src/sys/drivers/cd_atapi.c -o _drv_atapi.o
 $GCC $CFLAGS src/fs/lxfs.c -o lxfs.o
-$GCC $CFLAGS src/sys/drivers/disk_ide.c -o disk_ide.o
+$GCC $CFLAGS src/sys/drivers/disk_ide.c -o _drv_disk_ide.o
 $GCC $CFLAGS src/inst.c -o os_install.o
 $GCC $CFLAGS src/disk/partition.c -o partio.o
 $GCC $CFLAGS src/sys/syscall.c -o syscall.o -masm=intel
@@ -52,10 +52,14 @@ echo "\nLinking...\n"
 #i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel boot.o kernel.o vga.o gdt.o gdts.o util.o idt.o idts.o stdio.o keyboard.o timer.o kmalloc.o unistd.o core_asm.o terminal.o string.o commands.o disk_ata.o atapi.o lxfs.o disk_ide.o os_install.o cpu_asm.o partio.o syscall.o elf.o _proc.o 
 i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel *.o
 
-# remove some object files so they don't be included in static library
-rm boot.o kernel.o gdts.o idts.o 
+# remove boot and kernel object files
+ # rm boot.o kernel.o
+# remove some object files so they don't be included in library
+## rm gdts.o idt.o idts.o _drv*.o
+# create dynamic library
+# i686-elf-ld --no-warn-rwx-segments -shared -m elf_i386 -T lib/llinker.ld -o lib/libkern.dylib *.o
 # create static library
-i686-elf-ar rcs lib/libkern.a *.o
+ # i686-elf-ar rcs lib/libkern.a *.o
 
 #clean (rm *.o)
 rm *.o

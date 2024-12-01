@@ -71,9 +71,9 @@ void __exec_sys_call(struct InterruptRegisters* regs){
 #include <sys/kmalloc.h>
 #include <fs/lxfs.h>
 #include <sys/elf.h>
-extern LXFS_DIR currentDir;
+
 SCDEF(bool, execa, const char* fname, uint32_t address){
-    LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
+    LXFS_ENTRY* e = lxfs_open_file(lxfs_get_current_dir(), fname);
 
     uint32_t lba = lxfs_get_data_lba(e->lba);
     uint32_t size = e->size;
@@ -131,7 +131,7 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
 }
 
 SCDEF(bool, exec, const char* fname) {
-    LXFS_ENTRY* e = lxfs_open_file(&currentDir, fname);
+    LXFS_ENTRY* e = lxfs_open_file(lxfs_get_current_dir(), fname);
     
     uint32_t lba = lxfs_get_data_lba(e->lba);
     uint32_t size = e->size;

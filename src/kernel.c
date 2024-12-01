@@ -33,7 +33,7 @@ extern uint32_t _kernel_end;
 
 bool __global_exit;
 
-LXFS_DIR currentDir; // the LBA of a dir
+LXFS_DIR *currentDir;
 
 extern void init_system_calls(void);
 
@@ -87,9 +87,9 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
     dpart.drive = 0;
     memcpy(&dpart.part, &defpart, PARTITION_STRUCT_SIZE);
     lxfs_use_partition(&dpart);    
-    lxfs_get_dir(0,&currentDir);
     lxfs_load_filesystem();
-    
+    currentDir = lxfs_get_current_dir();
+
     // AFTER FILE SYSTEM LOADING //
     
     init_users();
@@ -115,7 +115,7 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
         // print computer name
         printf("^7@%s ", computer_name);
         // print current working directory
-        printf("^f%s^7", lxfs_get_dir_name(&currentDir));
+        printf("^f%s^7", lxfs_get_dir_name(currentDir));
         // print the '>'
         printf(" > ");
         // todo
@@ -169,7 +169,7 @@ void __execute_full(const char* command){
     else if (strcmd(command, "ls")) cmd_ls(command, argc, tokens);
     else if (strcmd(command, "cd")) cmd_cd(command, argc, tokens);
     else if (strcmd(command, "mkdir")) cmd_mkdir(command, argc, tokens);
-    else if (strcmd(command, "lba")) printf("%u\n",currentDir.entry.lba);
+    else if (strcmd(command, "lba")) printf("%u\n",currentDir->entry.lba);
     else if (strcmd(command, "rmdir")) cmd_rmdir(command, argc, tokens);
     else if (strcmd(command, "new")) {
         if (argc < 1) {
@@ -180,7 +180,7 @@ void __execute_full(const char* command){
         memset(tmp, 0, 10);
         nread(tmp, 10);
         uint32_t bytes = stoi(tmp);
-        int err = lxfs_create_new_file(&currentDir, command+tokens[0], 0777, 0, bytes);
+        int err = lxfs_create_new_file(currentDir, command+tokens[0], 0777, 0, bytes);
         if (err) printf("error: %u\n", err);
    }else if (strcmd(command, "rm")) cmd_rm(command, argc, tokens);
     else if (strcmd(command, "led")) {
@@ -199,7 +199,7 @@ void __execute_full(const char* command){
         if (argc < 1) logerr("no input file");
         else {
             elf_prog_data pd;
-            elf_load_file(&currentDir, command+tokens[0], &pd);
+            elf_load_file(currentDir, command+tokens[0], &pd);
             printf("-- PROGRAM DATA: --\n");
             printf("File offset: %p\nMemory size: %p\n", pd.memoff, pd.memsz);
             printf("Entry point address: %p\n", pd.entry);
