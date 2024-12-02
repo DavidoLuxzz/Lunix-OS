@@ -57,7 +57,7 @@ i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel *.o
 # remove some object files so they don't be included in library
 ## rm gdts.o idt.o idts.o _drv*.o
 # create dynamic library
-i686-elf-ld --no-warn-rwx-segments -shared -m elf_i386 -T linker.ld -o lib/libkern.dylib *.o
+i686-elf-ld --no-warn-rwx-segments -shared -m elf_i386 -T linker.ld -o lib/libkern.so *.o
 # create static library
 i686-elf-ar rcs lib/libskern.a *.o
 
