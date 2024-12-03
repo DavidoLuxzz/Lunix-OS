@@ -65,7 +65,8 @@ i686-elf-ar rcs lib/libskern.a *.o
 rm *.o
 
 # compile 'redirect' library sources
-$GCC $CFLAGS src/lib/redirect_kern/redirect.c -o _lib_redirect.o
+$GCC $CFLAGS -masm=intel src/lib/redirect_kern/redirect.c -o _lib_redirect.o
+nasm -f elf32 src/lib/redirect_kern/redirasm.s -o _lib_redirasm.o
 
 # archive static redirect library
 i686-elf-ar rcs lib/libredir.a *.o

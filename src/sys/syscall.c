@@ -16,6 +16,7 @@ void init_system_calls(){
     __syscall_functions[1] = __exec;
     __syscall_functions[2] = __write;
     __syscall_functions[3] = __execa;
+    __syscall_functions[4] = __sync0;
 }
 
 void __exec_sys_call(struct InterruptRegisters* regs){
@@ -124,9 +125,10 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
     // it doesn't affect the workflow if you load the program before creating a process
     void (*_where)() = (void*) (program_memory+pd->entry);
     printf("PROC START AT ADDR=%p\n", _where);
-    for (int i=0; i<16; i++) printf("%x ", program_memory[i]&0xFF);
+    /*for (int i=0; i<16; i++) printf("%x ", program_memory[i]&0xFF);
+    */
     _where();
-    printf("PROC FINISH\n");
+    //printf("PROC FINISH\n");
     return 0;
 }
 
@@ -191,7 +193,9 @@ SCDEF(void, write, const char* _str, size_t len) {
     write(str, len);
 }
 
-
-
+SCDEF(void, sync0,   void* dest){
+    asif(dest+0, printf);
+    printf("called sync0\n");
+}
 
 

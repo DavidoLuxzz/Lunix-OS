@@ -19,8 +19,7 @@
 void init_system_calls(void);
 void __exec_sys_call(struct InterruptRegisters*);
 
-#define SCDEC(argc, type, name, ...) static const int __SYSCALL_##name##_ARGC = argc; \
-                                        type __##name (__VA_ARGS__);
+#define SCDEC(index, type, name, ...) type __##name (__VA_ARGS__); // index argument not used at all
 #define SCDEF(type, name, ...) type __##name (__VA_ARGS__)
 
 /* Creates new process */
@@ -35,6 +34,11 @@ SCDEC(1,    bool,   exec,    const char*)
  */
 SCDEC(2,    void,   write,      const char*, size_t)
 SCDEC(3,    bool,   execa,      const char*, uint32_t)
+/* Sync0 system call:
+ *  Synchronizes library function addresses in program with their coresponding system function addresses.
+ *  Program is or could be located at address 0x0. First parameter is used as buffer to a list of function addresses.
+ */
+SCDEC(4,    void,   sync0,      void*)
 
 
 
