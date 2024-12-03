@@ -7,7 +7,9 @@ MBOOT_MAGIC    equ 0x1BADB002
 MBOOT_FLAGS    equ MBOOT_MEM_INFO
 MBOOT_CHECKSUM equ -(MBOOT_MAGIC + MBOOT_FLAGS)
 
-section .text
+; multiboot data should have its own section
+; so QEMU could find data needed to run with -kernel option
+    section .multiboot
     ALIGN 4
     DD MBOOT_MAGIC
     DD MBOOT_FLAGS
@@ -19,9 +21,9 @@ section .text
     DD 960 ;height
     DD 32 ;depth
 
+    section .text
     global start
     extern kmain
-    extern __cpu_check
 
 start:
     CLI
@@ -41,7 +43,7 @@ HaltKernel:
     HLT
     JMP HaltKernel
 
-section .bss
+    section .bss
 stack_bottom:
     RESQ 8192   ; 64 kB
 stack_top:

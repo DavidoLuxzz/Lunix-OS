@@ -3,7 +3,13 @@ ENTRY(start)
 SECTIONS
  {
     . = 0x1000000;
-    .text : {*(.text)}
+    /* .text section contains .multiboot and .text */
+    .text : {
+        /* thus .multiboot section set as first .text section,
+         * so that QEMU could find it */
+        *(.multiboot)
+        *(.text)
+    }
     .data : {*(.data)}
     .bss  : {*(.bss)}
 
