@@ -18,6 +18,7 @@ void logwarn(const char*);
 void log(const char*);
 
 #define CEIL_DIV(a,b) (((a + b) - 1)/b)
+
 #define asif(dest,val)  if(val) *(void**)(&dest) = val
 
 struct InterruptRegisters{
