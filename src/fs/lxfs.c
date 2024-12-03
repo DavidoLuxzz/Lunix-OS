@@ -157,9 +157,8 @@ void _lxfs_occupy_data_space(uint32_t block){
 void _lxfs_free_data_space(uint32_t block){
     uint32_t byte_off = block / 8;
     uint32_t inbyte_off = block - byte_off;
-    uint8_t m = 0xFF;
-    m ^= (0x80>>inbyte_off);
-    *(__lxfs_data_bitmap+byte_off) &= m;
+    uint8_t m = (0x80>>inbyte_off);
+    *(__lxfs_data_bitmap+byte_off) &= (~m); // inverted m
 }
 
 void _lxfs_occupy_space(uint32_t _4sector){
@@ -170,9 +169,8 @@ void _lxfs_occupy_space(uint32_t _4sector){
 void _lxfs_free_space(uint32_t _4sector){
     uint32_t byte_off = _4sector / 8;
     uint32_t inbyte_off = _4sector - byte_off;
-    uint8_t m = 0xFF;
-    m ^= (0x80>>inbyte_off);
-    *(__lxfs_fs_bitmap+byte_off) &= m;
+    uint8_t m = (0x80>>inbyte_off);
+    *(__lxfs_fs_bitmap+byte_off) &= (~m);
 }
 int lxfs_create_new_dir(LXFS_DIR *currentDir,const char* name,uint16_t perms,uint8_t flags){
     uint32_t parent_lba = currentDir->entry.lba;
