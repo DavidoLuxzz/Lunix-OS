@@ -4,7 +4,16 @@
 #define FDEC(type, name, ...) type (*name)(__VA_ARGS__)
 
 FDEC(void,      printf,     const char*, ...);
-
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
+FDEC(void,      printf,     const char*, ...);
 
 const char* __test_text = "*Ovaj tekst je iz libredir.a";
 
