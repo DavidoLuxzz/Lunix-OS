@@ -5,7 +5,6 @@ export GCC=i686-elf-gcc
 export LIBS="$PWD/../lib"
 
 echo "Compiling bin/ programs"
-nasm -f elf32 ../src/bin/test.s -o bin_test.o
 
 $GCC $CFLAGS -c ../src/bin/program.c -o bin_program.o
 

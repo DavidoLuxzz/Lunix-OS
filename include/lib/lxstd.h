@@ -6,8 +6,10 @@
 // do not include system headers because they
 // won't be avaiable be 3rd part programs
 
-void sync0(void*);
-
+// syscalls
+void sync0(void);
+//void write(void*, unsigned long int);
+void write(void);
 #define __EXTERN_FUNC__(type, name, ...) extern type (*name)(__VA_ARGS__)
 
 __EXTERN_FUNC__(void, printf, const char*, ...);

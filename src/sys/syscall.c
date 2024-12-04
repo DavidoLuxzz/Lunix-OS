@@ -21,6 +21,7 @@ void init_system_calls(){
 
 void __exec_sys_call(struct InterruptRegisters* regs){
     uint32_t eax = regs->eax;
+    printf("called syscall no %u\n", eax);
 /*
     printf("EAX code = %p\n", eax);
     printf("EDX = %p\nEBX = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edx, regs->ebx, regs->ebp, regs->esp, regs->eip);
@@ -28,7 +29,7 @@ void __exec_sys_call(struct InterruptRegisters* regs){
     void (*fn)();
     fn = __syscall_functions[eax];
     if (eax>=__NUM_SYSCALLS || !fn) {
-        printf("invalid system call! (EIP = %p)\n", regs->eip);
+        printf("invalid system call 0x%x! (EIP = %p)\n", eax, regs->eip);
         return;
     }
     // execution
@@ -84,6 +85,7 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
         printf("error: size=0\n");
         return 6;
     }
+    printf("File size = 0x%x bytes\n", size*512);
     // ELF stuff
     char* bytes = kmalloc(size * 512);
     if (!bytes) { logerr("kmalloc error"); return 6; }
@@ -104,9 +106,9 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
     // now for each segment load it into memory
     for (int i=0; i<pd->s_num; i++){
         elf_segment seg = pd->s_data[i];
-        // printf("Loaded segment from foff=%p to off=%p with memsz=0x%x\n",seg.s_foffset, seg.s_offset, seg.s_memsz);
+        printf("Loaded segment from foff=%p to off=%p with memsz=0x%x\n",seg.s_foffset, seg.s_offset, seg.s_memsz);
         memcpy(program_memory+seg.s_offset, bytes+seg.s_foffset, seg.s_memsz);
-        // for (int j=0; j<16; j++) printf("%x ", bytes[seg.s_foffset + j]&0xFF);
+        //for (int j=0; j<seg.s_memsz; j++) printf("%x ", bytes[seg.s_foffset + j]&0xFF); putc(0xa);
     }
     kfree(bytes);
     kfree(pd);
@@ -187,15 +189,19 @@ SCDEF(uint32_t, get_paddr, uint32_t addr){
 }
 SCDEF(void, write, const char* _str, size_t len) {
     // printf("_str: %p\nmemfix: %u\n", _str, memfix);
-    const char* str = _str + proc_get_current()->daddr;
-    // printf("write called!\nstr: %p\nlen=%u\n", str, len);
+  // const char* str = _str + proc_get_current()->daddr;   <<-- process relative address depended (uncomment if needed)
+    const char* str = _str;
+    printf("write called!\nstr: %p\nlen=%u\n", str, len);
     // printf("first value = %x (%c)\n", *str&0xFF, *str&0xFF);
     write(str, len);
 }
 
+#define fnass(dest, fn)  *(size_t*)(dest) = (size_t)fn
+
 SCDEF(void, sync0,   void* dest){
-    asif(dest+0, printf);
-    printf("called sync0\n");
+    //asif(dest+0, printf); ? dont use asif()
+    fnass(dest+0, printf);  // assign manually the printf address to dest
+    printf("called sync0 [dest(%p)] = %p\n", dest, *(uint32_t*)dest);
 }
 
 
