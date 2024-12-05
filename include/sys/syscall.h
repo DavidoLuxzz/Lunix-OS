@@ -38,7 +38,7 @@ SCDEC(3,    bool,   execa,      const char*, uint32_t)
  *  Synchronizes library function addresses in program with their coresponding system function addresses.
  *  Program is or could be located at address 0x0. First parameter is used as buffer to a list of function addresses.
  */
-SCDEC(4,    void,   sync0,      void*)
+SCDEC(4,    void,   sync0,      void*, size_t)
 
 
 

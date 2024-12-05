@@ -21,7 +21,6 @@ void init_system_calls(){
 
 void __exec_sys_call(struct InterruptRegisters* regs){
     uint32_t eax = regs->eax;
-    printf("called syscall no %u\n", eax);
 /*
     printf("EAX code = %p\n", eax);
     printf("EDX = %p\nEBX = %p\nEBP = %p\nESP = %p\nEIP = %p\n", regs->edx, regs->ebx, regs->ebp, regs->esp, regs->eip);
@@ -85,9 +84,10 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
         printf("error: size=0\n");
         return 6;
     }
-    printf("File size = 0x%x bytes\n", size*512);
     // ELF stuff
-    char* bytes = kmalloc(size * 512);
+    size_t sizeb = size * 512;
+    
+    char* bytes = kmalloc(sizeb);
     if (!bytes) { logerr("kmalloc error"); return 6; }
     _ata_disk_read(0, lba,size, bytes);
     uint32_t s_num = elf_get_num_segments(bytes);
@@ -106,6 +106,10 @@ SCDEF(bool, execa, const char* fname, uint32_t address){
     // now for each segment load it into memory
     for (int i=0; i<pd->s_num; i++){
         elf_segment seg = pd->s_data[i];
+        if (seg.s_foffset+seg.s_memsz > sizeb){
+            logwarn("cannot load segment; segment is out of file bounds");
+            continue;
+        }
         printf("Loaded segment from foff=%p to off=%p with memsz=0x%x\n",seg.s_foffset, seg.s_offset, seg.s_memsz);
         memcpy(program_memory+seg.s_offset, bytes+seg.s_foffset, seg.s_memsz);
         //for (int j=0; j<seg.s_memsz; j++) printf("%x ", bytes[seg.s_foffset + j]&0xFF); putc(0xa);
@@ -198,10 +202,14 @@ SCDEF(void, write, const char* _str, size_t len) {
 
 #define fnass(dest, fn)  *(size_t*)(dest) = (size_t)fn
 
-SCDEF(void, sync0,   void* dest){
+// dest je lista(ptr) pointera(&fn) koji pointaju u funkciju(fn)
+
+SCDEF(void, sync0,   void* dest, size_t fid){
+    static void* fns[] = {printf, kfree};
     //asif(dest+0, printf); ? dont use asif()
-    fnass(dest+0, printf);  // assign manually the printf address to dest
-    printf("called sync0 [dest(%p)] = %p\n", dest, *(uint32_t*)dest);
+    //*(size_t*)(*(dest+4)) = (size_t)printf;
+    fnass(dest+0, fns[fid]);  // assign manually the printf address to dest
+    // printf("called sync0 [dest(%p)] = %p\n", dest, *(uint32_t*)dest);
 }
 
 

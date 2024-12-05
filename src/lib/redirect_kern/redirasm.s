@@ -8,12 +8,18 @@ sync0:
     ; syscall no.
     mov     eax,    4 ; sync0 system call number
     ; ebx = param 1 (address of the list)
-    mov     ebx,    printf
+    mov     ebx,    [ebp+8]
+    mov     ecx,    [ebp+12]
     int     0x80
 
     pop     ebp
     ret
-    
+   
+
+
+
+
+; unused 
     global  write
 write:
     push    ebp
