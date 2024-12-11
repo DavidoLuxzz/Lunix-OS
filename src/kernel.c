@@ -195,6 +195,13 @@ void __execute_full(const char* command){
     else if (strcmd(command, "fsz")) cmd_fsz(command, argc, tokens);
     else if (strcmd(command, "user")) cmd_user(command, argc, tokens);
     else if (strcmd(command, "login")) cmd_login(command, argc, tokens);
+    else if (strcmd(command, "font")) {
+        int _x = 40;
+        for (uint8_t y=0; y<6; y++){
+            for (int c=0; c<_x; c++) _putchar(y*_x + c&0xFF);
+            putc(0xa);
+        }
+    }
     else if (strcmd(command, "elf")){
         if (argc < 1) logerr("no input file");
         else {

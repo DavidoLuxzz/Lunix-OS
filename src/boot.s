@@ -1,10 +1,10 @@
 BITS 32
 
-MBOOT_MEM_INFO EQU 1 << 1
-MBOOT_USE_GFX EQU 0
+MBOOT_MEM_INFO  EQU 1 << 1
+MBOOT_USE_GFX   EQU 1 << 2
 
 MBOOT_MAGIC    equ 0x1BADB002
-MBOOT_FLAGS    equ MBOOT_MEM_INFO
+MBOOT_FLAGS    equ (MBOOT_MEM_INFO | MBOOT_USE_GFX)
 MBOOT_CHECKSUM equ -(MBOOT_MAGIC + MBOOT_FLAGS)
 
 ; multiboot data should have its own section
@@ -16,10 +16,10 @@ MBOOT_CHECKSUM equ -(MBOOT_MAGIC + MBOOT_FLAGS)
     DD MBOOT_CHECKSUM
     DD 0, 0, 0, 0, 0
 
-    DD 0 ;0 = linear graphics
-    DD 1280 ;width
-    DD 960 ;height
-    DD 32 ;depth
+    DD 1 ;0 = linear graphics
+    DD 80 ;width
+    DD 50 ;height
+    DD 0 ;depth
 
     section .text
     global start
