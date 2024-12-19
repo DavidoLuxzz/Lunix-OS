@@ -127,7 +127,8 @@ bool __term_check_keycode(uint32_t keycode, char press){
             ___term_ctrl_on = !press;
             return 1;
         case 46: // C
-            if (___term_ctrl_on) for(;;);
+                 // halt if ^C
+            // if (___term_ctrl_on) for(;;);
             return 0;
         case 0xE0:
             return 1;

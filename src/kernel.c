@@ -195,6 +195,7 @@ void __execute_full(const char* command){
     else if (strcmd(command, "fsz")) cmd_fsz(command, argc, tokens);
     else if (strcmd(command, "user")) cmd_user(command, argc, tokens);
     else if (strcmd(command, "login")) cmd_login(command, argc, tokens);
+    else if (strcmd(command, "driver")) cmd_driver(command, argc, tokens);
     else if (strcmd(command, "font")) {
         int _x = 40;
         for (uint8_t y=0; y<6; y++){

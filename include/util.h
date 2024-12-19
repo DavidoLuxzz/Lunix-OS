@@ -20,6 +20,7 @@ void log(const char*);
 #define CEIL_DIV(a,b) (((a + b) - 1)/b)
 
 #define asif(dest,val)  if(val) *(void**)(&dest) = val
+#define desif(dest,val) if((void*)dest==(void*)val) *(void**)(&dest) = NULL
 
 struct InterruptRegisters{
     uint32_t cr2;

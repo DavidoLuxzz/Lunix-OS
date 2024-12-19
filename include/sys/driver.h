@@ -71,7 +71,10 @@ enum driver_type_enum {
     DT_FS_EXT3,
     DT_FS_EXT4,
     DT_FS_XFS,
-    DT_FS_ZFS
+    DT_FS_ZFS,
+
+    // leave for last
+    DT_LAST
 };
 
 /* All driver slots enum 
@@ -99,6 +102,7 @@ enum driver_slots_enum {
     // leave for last
     DS_LAST
 };
+#define DS_INVALID  0xFFFFFFF
 /* Driver slots enum will be used as slots for drivers.
  * Example: If a driver has a driver type DT_FLOPPY, when installing it would be loaded
  *          to driver slot with index DT_FLOPPY and it will be set as the main driver for managing
@@ -124,6 +128,35 @@ int     driver_install(const struct driver_t*);
  *   - free the slot used by driver
  */
 void    driver_uninstall(const struct driver_t*);
+
+/** Function for uninstalling a driver without access to main drivers list (which only kernel has)
+ * Checks if has enough access to do so, thats why the function name is driver_req_uninstall (short for driver request uninstall).
+ * @param id - the slot where driver is installed
+ */
+int     driver_req_uninstall(int id);
+
+/** Function for deciding which driver type belongs to which slot
+ */
+int     driver_get_slot(uint16_t type);
+
+/** Function for returning driver type name
+ */
+const char* driver_get_type_name(uint16_t type);
+
+/** Function for creating a list of installed drivers.
+ * Returns driver list buffer.
+ * @param driver_list_size - size of driver list buffer.
+ * Note that this list is create via allocation (kmalloc) and should be freed
+ */
+driver_t    *driver_create_list_installed_drivers(int *driver_list_size);
+
+/** Function for freeing a list of installed drivers.
+ */
+void        driver_delete_list_installed_drivers(void*);
+
+
+
+
 
 
 

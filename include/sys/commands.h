@@ -23,4 +23,5 @@ __CMD_FUNC(cmd_runa);
 __CMD_FUNC(cmd_fsz);
 __CMD_FUNC(cmd_user);
 __CMD_FUNC(cmd_login);
+__CMD_FUNC(cmd_driver);
 
