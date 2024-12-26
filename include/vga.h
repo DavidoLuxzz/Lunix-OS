@@ -36,19 +36,18 @@ void move_cursor(uint32_t x, uint32_t y); // text cursor not the visible blinkin
 void set_vga_position(uint32_t pos);
 uint32_t get_vga_position(void);
 
-void __vga_set_text_color(uint16_t);
-void __vga_set_background_color(uint16_t);
-void __vga_set_color(uint16_t);
-uint16_t __vga_get_color(void);
+void set_text_color(uint16_t);
+void set_background_color(uint16_t);
+void set_color(uint16_t);
+uint16_t get_color(void);
 void _putchar(char c); // raw char ('\n' isn't a new line)
-int __vga_putchar(char c); // raw but complete vga putchar function
-void __vga_setchar(char c, int x, int y);
-char __vga_getchar(int x, int y);
+int putchar(char c); // raw but complete vga putchar function
+void setchar(char c, int x, int y);
+char getchar(int x, int y);
 void print(const char*); // depends on libkern putchar()
-// LIBKERN extern
-extern int (*putchar)(char c);
 
-void __vga_deleteLast();
-void __vga_scrollUp();
-void __vga_newLine();
-void __vga_clear_screen();
+
+void deleteLast();
+void scrollUp();
+void newLine();
+void clear_screen();

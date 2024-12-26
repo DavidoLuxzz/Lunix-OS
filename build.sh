@@ -60,7 +60,7 @@ i686-elf-ld --no-warn-rwx-segments -m elf_i386 -T linker.ld -o kernel *.o
 # create dynamic library
 i686-elf-ld --no-warn-rwx-segments -shared -m elf_i386 -T linker.ld -o lib/libkern.so *.o
 # create static kern library
-i686-elf-ar rcs lib/libskern.a *.o
+##### i686-elf-ar rcs lib/libskern.a *.o       # UNCHECK TO BUILD LIBRARY
 
 # clean
 rm *.o
@@ -70,7 +70,7 @@ $GCC $CFLAGS -masm=intel src/lib/redirect_kern/redirect.c -o _lib_redirect.o
 nasm -f elf32 src/lib/redirect_kern/redirasm.s -o _lib_redirasm.o
 
 # archive static redirect library
-i686-elf-ar rcs lib/libredir.a *.o
+##### i686-elf-ar rcs lib/libredir.a *.o        # UNCHECK TO BUILD LIBRARY
 
 # clean (rm *.o)
 rm *.o

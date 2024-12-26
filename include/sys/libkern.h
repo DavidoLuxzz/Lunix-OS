@@ -30,15 +30,5 @@ extern int     (*flp_write)(uint32_t lba, uint32_t num_sectors, void* dest_buf);
 extern int     (*keyboard_function)(int fnID, int action); // driver depended
 extern bool    (*keyboard_get_key)(uint16_t keycode);
 
-
-// ### VIDEO MANAGING
-// MDV
-extern void    (*video_chval)(int id, int val);
-extern int     (*putchar)(char c);
-extern void    (*deleteLast)(void);
-extern void    (*scrollUp)(void);
-extern void    (*newLine)(void);
-extern void    (*clear_screen)(void);
-
 // ... mrzi me da nastavim imam i istoriju da ucim tkd
 // naravno, nisam ucio .....

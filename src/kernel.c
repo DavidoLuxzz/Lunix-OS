@@ -25,7 +25,6 @@
 #include <sys/driver.h>
 #include <sys/libkern.h>
 #include <user/user.h>
-#include <sys/drivers/video.h>
 
 #define KERNEL_BOOT_START   0x01000000  // grub loaded kernel destination
 #define KERNEL_MEMORY_START 0x01200000  // = ~1 GB for kernel and bios   (1,25gb)
@@ -46,9 +45,6 @@ void _kernel_install_drivers(void);
 void __execute_full(const char*);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo);
 void kmain(uint32_t magic, struct multiboot_info* bootInfo){
-    // WARNING: before any use of vga printing the libkern putchar function must be initialized
-    asif(putchar, (void*) __vga_putchar);
-    // main
     printf("Loading ^9LUNIX OS^7... (%u)\nWelcome\n", loaded_times++);
     initGdt(KERNEL_MEMORY_START);
     printf("[ ^2OK^7 ] GDT initialized\n");
@@ -246,5 +242,4 @@ void _kernel_install_drivers(void){
     driver_install(k_keyboard_get_driver());
     driver_install(ide_get_driver0());
     driver_install(ide_get_driver1());
-    driver_install(lunix_video_get_driver());
 }

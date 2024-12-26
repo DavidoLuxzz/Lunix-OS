@@ -7,7 +7,7 @@ const uint16_t __defaultColor = (COLOR_LIGHT_GREY << 8) | (COLOR_BLACK << 12);
 uint16_t currentColor = __defaultColor;
 bool __cursor_enabled = false;
 
-void __vga_clear_screen(){
+void clear_screen(){
     line = 0;
     column = 0;
     currentColor = __defaultColor;
@@ -19,17 +19,17 @@ void __vga_clear_screen(){
     }
 }
 
-void __vga_newLine(){
+void newLine(){
     if (line < height - 1){
         line++;
         column = 0;
     }else{
-        __vga_scrollUp();
+        scrollUp();
         column = 0;
     }
 }
 
-void __vga_scrollUp(){
+void scrollUp(){
     for (uint16_t y = 0; y < height; y++){
         for (uint16_t x = 0; x < width; x++){
             vga[(y-1) * width + x] = vga[y*width+x];
@@ -41,7 +41,7 @@ void __vga_scrollUp(){
     }
 }
 
-void __vga_deleteLast(){
+void deleteLast(){
     if (column == 0 && line != 0){
         line--;
         column = width;
@@ -57,22 +57,22 @@ void print(const char* s){
     }
 }
 
-int __vga_putchar(char c){
+int putchar(char c){
     int new_char_count = 0;
     switch(c){
         case '\n':
-            __vga_newLine();
+            newLine();
             break;
         case '\r':
             column = 0;
             break;
         case '\b':
-            __vga_deleteLast();
+            deleteLast();
             new_char_count--;
             break;
         case '\t':
             if (column == width){
-                __vga_newLine();
+                newLine();
             }
             uint16_t tabLen = 4 - (column % 4);
             new_char_count += tabLen;
@@ -95,15 +95,15 @@ int __vga_putchar(char c){
 
 void _putchar(char c){
     if (column == width){
-        __vga_newLine();
+        newLine();
     }
     vga[line*width + (column++)] = c | currentColor;
 }
 
-void __vga_setchar(char c, int x, int y){
+void setchar(char c, int x, int y){
     vga[y*width + x] = c | currentColor;
 }
-char __vga_getchar(int x, int y){
+char getchar(int x, int y){
     return vga[y*width + x];
 }
 
@@ -122,22 +122,22 @@ uint32_t get_vga_position(void){
 }
 
 
-void __vga_set_text_color(uint16_t _col){
+void set_text_color(uint16_t _col){
     // (COLOR8_LIGHT_GREY << 8) | (COLOR8_BLACK << 12);
     uint16_t bg_col = currentColor & 0xF000;
     currentColor = ((_col&0xF) << 8) | (bg_col << 12);
 }
 
-void __vga_set_background_color(uint16_t _col){
+void set_background_color(uint16_t _col){
     uint16_t txt_col = currentColor & 0x0F00;
     currentColor = (txt_col << 8) | ((_col&0xF) << 12);
 }
 
-void __vga_set_color(uint16_t color){
+void set_color(uint16_t color){
     currentColor = (color << 8);
 }
 
-uint16_t __vga_get_color(){
+uint16_t get_color(){
     return currentColor;
 }
 
