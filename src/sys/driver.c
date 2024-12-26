@@ -46,12 +46,7 @@ int driver_install(const driver_t *driver){
         case DS_KEYBOARD0:
             asif(keyboard_function, driver->func0);
             asif(keyboard_get_key, driver->func1);
-            break;
-        // DS_MDVIDEO
-        case DS_MDVIDEO:
-            asif(video_chval, driver->func0);
-            asif(putchar, driver->func1);
-            break;        
+            break;     
         // invalid
         case DS_INVALID:
         default:
@@ -99,10 +94,6 @@ void driver_uninstall(const driver_t *driver){
             desif(keyboard_function, driver->func0);
             desif(keyboard_get_key, driver->func1);
             break;
-        // DS_VIDEO
-        case DS_VIDEO:
-            desif(video_chval, driver->func0);
-            desif(putchar, driver->func1);
             break;
         // invalid
         default:
@@ -140,9 +131,7 @@ int driver_get_slot(uint16_t type){
         case DT_KEYBOARD_PS2:
         case DT_KEYBOARD_STD:
             return DS_KEYBOARD0;
-        case DT_VIDEO_MDV:
-            return DS_MDVIDEO;
-
+        
         case DT_INVALID:
         default:
             return DS_INVALID;

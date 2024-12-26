@@ -54,7 +54,7 @@ enum driver_type_enum {
     // Graphics driver types
     DT_VIDEO_VGA,
     DT_VIDEO_INTEL,
-    DT_VIDEO_MDV,
+    DT_VIDEO_RESERVED0,
     DT_VIDEO_RESERVED1,
     DT_VIDEO_RESERVED2,
     DT_VIDEO_RESERVED3,
@@ -93,8 +93,6 @@ enum driver_slots_enum {
     DS_MOUSE1,
     // Video graphics driver slot
     DS_VIDEO,
-    // Middle-degree video driver slot
-    DS_MDVIDEO,
     // Filesystem driver slots for a max. of 4 filesystems open at once
     DS_FILESYSTEM0,
     DS_FILESYSTEM1,

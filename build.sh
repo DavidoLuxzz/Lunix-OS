@@ -27,7 +27,6 @@ $GCC $CFLAGS src/sys/_process.c -o _proc.o
 $GCC $CFLAGS src/sys/driver.c -o _driver.o
 $GCC $CFLAGS src/sys/libkern.c -o __libkern.o
 $GCC $CFLAGS src/user/user.c -o __user.o
-$GCC $CFLAGS src/sys/drivers/video.c -o _drv_mdv_video.o
 
 # compile system commands
 echo "compiling system commands"
