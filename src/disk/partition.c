@@ -26,23 +26,3 @@ void _set_partition(uint8_t drv, uint16_t id, PARTITION* part){
 }
 
 
-
-
-#include <vga.h>
-#include <unistd.h>
-#include <terminal.h>
-#include <keyboard.h>
-#include <sys/core_asm.h>
-
-int _gui_partition(uint8_t drv){
-    uint32_t eip = _getip();
-    PARTITION parts[MAX_PARTITIONS];
-    _ata_disk_read(drv, LPT_SECTOR, 1, (uint16_t*) parts);
-
-    clear_color(0x80);
-    
-    // end
-    clear_screen();
-    
-    return 0;
-}

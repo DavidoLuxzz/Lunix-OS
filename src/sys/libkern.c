@@ -23,3 +23,13 @@ int     (*flp_write)(uint32_t lba, uint32_t num_sectors, void* dest_buf);
 // KEYBOARD0
 void    (*keyboard_function)(int fnID, int action);
 void    (*keyboard_get_key)(uint16_t keycode);
+
+
+// ### VIDEO MANAGING ###
+// VIDEO
+void    (*video_chval)(int id, int val);
+int     (*putchar)(char c);
+void    (*deleteLast)(void);
+void    (*scrollUp)(void);
+void    (*newLine)(void);
+void    (*clear_screen)(void);

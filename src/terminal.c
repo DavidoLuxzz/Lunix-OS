@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <keyboard.h>
+#include <sys/libkern.h>
 
 char _stdin[TERMINAL_MAX_BUFFER_LENGTH];
 char _stdout[TERMINAL_MAX_BUFFER_LENGTH];

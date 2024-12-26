@@ -47,11 +47,15 @@ int driver_install(const driver_t *driver){
             asif(keyboard_function, driver->func0);
             asif(keyboard_get_key, driver->func1);
             break;
-        
+        // DS_MDVIDEO
+        case DS_MDVIDEO:
+            asif(video_chval, driver->func0);
+            asif(putchar, driver->func1);
+            break;        
         // invalid
         case DS_INVALID:
         default:
-            printf("[ ^6DRV^4 ERR^_ ] Invalid driver type %u\n", driver->type&0xFFFF);
+            printf("[ ^6DRV^4 ERR^_ ] Invalid driver type %u (%s)\n", driver->type&0xFFFF, driver->name);
             return 6;
     }
     __DRIVERS[slot] = *driver;
@@ -95,7 +99,11 @@ void driver_uninstall(const driver_t *driver){
             desif(keyboard_function, driver->func0);
             desif(keyboard_get_key, driver->func1);
             break;
-        
+        // DS_VIDEO
+        case DS_VIDEO:
+            desif(video_chval, driver->func0);
+            desif(putchar, driver->func1);
+            break;
         // invalid
         default:
             break;
@@ -132,6 +140,8 @@ int driver_get_slot(uint16_t type){
         case DT_KEYBOARD_PS2:
         case DT_KEYBOARD_STD:
             return DS_KEYBOARD0;
+        case DT_VIDEO_MDV:
+            return DS_MDVIDEO;
 
         case DT_INVALID:
         default:
@@ -141,7 +151,7 @@ int driver_get_slot(uint16_t type){
 }
 
 const char* driver_get_type_name(uint16_t type){
-    static const char* names[] = {"DT_INVALID","DT_ATA_PIO","DT_ATA_IDE","DT_ATA_AHCI","DT_ATAPI","DT_CDDVD","DT_FLOPPY","DT_RESV0","DT_RESV1","DT_KEYBOARD_PS2", "DT_KEYBOARD_STD", "DT_STD_MOUSE","DT_VIDEO_VGA","DT_VIDEO_INTEL","DT_VIDEO_RESV0","DT_VIDEO_RESV1","DT_VIDEO_RESV2","DT_VIDEO_RESV3","DT_FS_LXFS","DT_FS_ISO9660","DT_FS_FAT12","DT_FS_FAT16","DT_FS_FAT32","DT_FS_EXFAT","DT_FS_NTFS","DT_FS_EXT","DT_FS_EXT2","DT_FS_EXT3","DT_FS_EXT4","DT_FS_XFS","DT_FS_ZFS","null","null","null"};
+    static const char* names[] = {"DT_INVALID","DT_ATA_PIO","DT_ATA_IDE","DT_ATA_AHCI","DT_ATAPI","DT_CDDVD","DT_FLOPPY","DT_RESV0","DT_RESV1","DT_KEYBOARD_PS2", "DT_KEYBOARD_STD", "DT_STD_MOUSE","DT_VIDEO_VGA","DT_VIDEO_INTEL","DT_VIDEO_MDV","DT_VIDEO_RESV1","DT_VIDEO_RESV2","DT_VIDEO_RESV3","DT_FS_LXFS","DT_FS_ISO9660","DT_FS_FAT12","DT_FS_FAT16","DT_FS_FAT32","DT_FS_EXFAT","DT_FS_NTFS","DT_FS_EXT","DT_FS_EXT2","DT_FS_EXT3","DT_FS_EXT4","DT_FS_XFS","DT_FS_ZFS","null","null","null"};
     return names[type];
 }
 

@@ -94,14 +94,14 @@ void printf(const char* _fmt, ...){
                       // it just sets the color specified after the '^' (ex. "^0")
                 uint16_t _col_chr = *(++fmt);
                 if (_col_chr == '_'){
-                    set_text_color(7);
+                    __vga_set_text_color(7);
                     break;
                 }
                 uint16_t _col;
                 bool _found_col = false;
                 for (_col=0; _col<16; _col++){
                     if (HEXADECIMAL_CHARS[_col] == _col_chr){
-                        set_text_color(_col);
+                        __vga_set_text_color(_col);
                         _found_col = true;
                         break;
                     }

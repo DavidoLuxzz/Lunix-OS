@@ -5,6 +5,7 @@
 #include <keyboard.h>
 #include <vga.h>
 #include <terminal.h>
+#include <sys/libkern.h>
 
 bool capsOn;
 bool capsLock;
