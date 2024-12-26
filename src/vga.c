@@ -60,7 +60,7 @@ void deleteLast(){
     vga[line * width + (--column)] = 0 | currentColor;
 }
 
-void print(const char* s){
+void __vga_print(const char* s){
     int _x = 0;
     while(s[_x]){
         switch(s[_x]){

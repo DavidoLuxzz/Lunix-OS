@@ -15,4 +15,4 @@ void read(char *dest);
 void nread(char* dest, size_t len);
 
 extern void print(const char*);
-extern void x86_div64_32(uint64_t, uint32_t, uint64_t*, uint32_t*);
+// extern void x86_div64_32(uint64_t, uint32_t, uint64_t*, uint32_t*);

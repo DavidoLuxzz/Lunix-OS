@@ -1,4 +1,3 @@
-#include <vga.h>
 #include <interrupts/idt.h>
 #include <stdio.h>
 
@@ -137,9 +136,7 @@ char* exception_messages[] = {
 #include <sys/syscall.h>
 void isr_handler(struct InterruptRegisters* regs){
     if (regs->int_no < 32){
-        print(exception_messages[regs->int_no]);
-        print("\n");
-        print("Exception! System Halted\n");
+        printf("%s\nException! System Halted\n", exception_messages[regs->int_no]);
         printf("EIP: %p\n", regs->eip);
         printf("Instruction Code: 0x%x", *(uint32_t*)regs->eip);
         for (;;);

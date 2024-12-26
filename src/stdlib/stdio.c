@@ -48,7 +48,7 @@ void printx32(uint32_t n){
 }
 void printptr(void* n){
     // hexadecimal
-    print("0x");
+    write("0x", 2);
     uint32_t len=0;
     char nstr[8];
     memset(nstr, '#', 8); // debug

@@ -104,7 +104,7 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
   
     // --- RESET SCREEN --- //
     // clear_screen();
-    print("LunixOS 0.4.3\n\n");
+    printf("LunixOS 0.4.3\n\n");
     
     char command[TERMINAL_MAX_BUFFER_LENGTH];
     __global_exit = 0;
@@ -123,7 +123,7 @@ void kmain(uint32_t magic, struct multiboot_info* bootInfo){
         __execute_full(command);
     }
     k_setKeyboardMode(K_MODE_DISABLED);
-    print("Halting...\n");
+    printf("Halting...\n");
     for(;;);
 }
 
@@ -229,7 +229,7 @@ void __execute_full(const char* command){
 
         kfree(buf);
     }else {
-        print("unknown command: "); write(command, strdlen(command, ' '));
+        printf("unknown command: "); write(command, strdlen(command, ' '));
         newLine();
     }
 }

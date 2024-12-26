@@ -59,7 +59,7 @@ void *kmalloc(uint32_t size){ // size in bytes ofc
         }
         ptr += _mem_blk_sizes[index];
     }
-    print("kmalloc: error: cannot find enough space for allocation\n");
+    printf("kmalloc: error: cannot find enough space for allocation\n");
     return NULL;
 }
 
@@ -83,7 +83,7 @@ int kfree(void* _ptr){
             if (bitval){
                 _mem_bitmap[u32id] ^= bitval;  // mark space as free
             } else {
-                print("kfree: warning: given pointer was already free\n");
+                printf("kfree: warning: given pointer was already free\n");
             }
             return 0;
         }

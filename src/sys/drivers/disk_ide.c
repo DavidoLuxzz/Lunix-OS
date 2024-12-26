@@ -102,32 +102,32 @@ void ide_read_buffer(unsigned char channel, unsigned char reg, void* buffer,
 
 
 unsigned char ide_print_error(unsigned int drive, unsigned char err) {
-    print("IDE: ");
+    printf("IDE: ");
     if (err == 0){
-        print("- No Error\n");
+        printf("- No Error\n");
         return err;
     }
 
-    if (err == 1) {print("- Device Fault\n     "); err = 19;}
+    if (err == 1) {printf("- Device Fault\n     "); err = 19;}
     else if (err == 2) {
         unsigned char st = ide_read(ide_devices[drive].channel, ATA_REG_ERROR);
-        if (st & ATA_ER_AMNF)   {print("- No Address Mark Found\n     ");   err = 7;}
-        if (st & ATA_ER_TK0NF)   {print("- No Media or Media Error\n     ");   err = 3;}
-        if (st & ATA_ER_ABRT)   {print("- Command Aborted\n     ");      err = 20;}
-        if (st & ATA_ER_MCR)   {print("- No Media or Media Error\n     ");   err = 3;}
-        if (st & ATA_ER_IDNF)   {print("- ID mark not Found\n     ");      err = 21;}
-        if (st & ATA_ER_MC)   {print("- No Media or Media Error\n     ");   err = 3;}
-        if (st & ATA_ER_UNC)   {print("- Uncorrectable Data Error\n     ");   err = 22;}
-        if (st & ATA_ER_BBK)   {print("- Bad Sectors\n     ");       err = 13;}
-    } else  if (err == 3)           {print("- Reads Nothing\n     "); err = 23;}
-    else  if (err == 4)  {print("- Write Protected\n     "); err = 8;}
+        if (st & ATA_ER_AMNF)   {printf("- No Address Mark Found\n     ");   err = 7;}
+        if (st & ATA_ER_TK0NF)   {printf("- No Media or Media Error\n     ");   err = 3;}
+        if (st & ATA_ER_ABRT)   {printf("- Command Aborted\n     ");      err = 20;}
+        if (st & ATA_ER_MCR)   {printf("- No Media or Media Error\n     ");   err = 3;}
+        if (st & ATA_ER_IDNF)   {printf("- ID mark not Found\n     ");      err = 21;}
+        if (st & ATA_ER_MC)   {printf("- No Media or Media Error\n     ");   err = 3;}
+        if (st & ATA_ER_UNC)   {printf("- Uncorrectable Data Error\n     ");   err = 22;}
+        if (st & ATA_ER_BBK)   {printf("- Bad Sectors\n     ");       err = 13;}
+    } else  if (err == 3)           {printf("- Reads Nothing\n     "); err = 23;}
+    else  if (err == 4)  {printf("- Write Protected\n     "); err = 8;}
 
-    print("- [");
+    printf("- [");
     unsigned char _ch = ide_devices[drive].channel;
     if (_ch) printf("%u: Secondary ", _ch);
     else printf("%u: Primary ", _ch);
-    print("] ");
-    print(ide_devices[drive].model);
+    printf("] ");
+    printf("%s",ide_devices[drive].model);
     putc('\n');
 
     return err;
@@ -220,7 +220,7 @@ void ide_initialize(void) {
 
          count++;
       }
-    print("Installing IDE driver interrupt handler (IRQ 14, 15)\n");
+    printf("Installing IDE driver interrupt handler (IRQ 14, 15)\n");
     ide_install_handler();
 }
 
